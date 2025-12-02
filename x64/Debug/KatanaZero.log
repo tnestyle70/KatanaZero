@@ -1,0 +1,8 @@
+﻿  CPlayer.cpp
+C:\Users\tnest\source\repos\카타나제로\KatanaZero\KatanaZero\CInputManager.h(19,38): warning C4244: 'return': 'LONG'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+  (소스 파일 'CPlayer.cpp'을(를) 컴파일하는 중)
+  
+C:\Users\tnest\source\repos\카타나제로\KatanaZero\KatanaZero\CInputManager.h(20,38): warning C4244: 'return': 'LONG'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+  (소스 파일 'CPlayer.cpp'을(를) 컴파일하는 중)
+  
+  KatanaZero.vcxproj -> C:\Users\tnest\source\repos\카타나제로\KatanaZero\x64\Debug\KatanaZero.exe
