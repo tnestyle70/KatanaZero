@@ -3,26 +3,26 @@
 #define WINCY 720
 #define TILE_SIZE 32
 #define PURE = 0
-#define PI = 3.1415
+#define PI 3.141592
 #define NOEVENT 0
 #define DEAD 1
 
 //대쉬 상수 
 const float DASH_COOMTIME = 0.36f;
-const float DASH_SPEED = 600.f;
+const float DASH_SPEED = 1000.f;
 const float DASH_DURATION = 0.18f;
 const float DASH_IFRAME_TIME = 0.16f;
 //공격 상수
-const float ATTACK_COOLTIME = 0.2f;
-const float ATTACK_DURATION = 0.18f;
+const float ATTACK_COOLTIME = 0.1f;
+const float ATTACK_DURATION = 0.09f;
 //공격시에 살짝 앞으로 끌어당김
-const float ATTACK_LUNGE_SPEED = 500.f;
+const float ATTACK_LUNGE_SPEED = 1000.f;
 
 extern HWND g_hWnd;
 
 enum eObjID
 {
-	OBJ_PLAYER = 0, OBJ_ENEMY_SHOTGUN, OBJ_END
+	OBJ_PLAYER = 0, OBJ_ENEMY_SHOTGUN, OBJ_SHOTGUN_BULLET, OBJ_END
 };
 
 typedef struct Info

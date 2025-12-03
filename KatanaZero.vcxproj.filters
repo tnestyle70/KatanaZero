@@ -60,6 +60,9 @@
     <ClInclude Include="CEnemyShotgun.h">
       <Filter>소스 파일</Filter>
     </ClInclude>
+    <ClInclude Include="CBullet.h">
+      <Filter>소스 파일</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="KatanaZero.cpp">
@@ -87,6 +90,9 @@
       <Filter>소스 파일</Filter>
     </ClCompile>
     <ClCompile Include="CEnemyShotgun.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="CBullet.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
   </ItemGroup>

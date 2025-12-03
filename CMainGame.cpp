@@ -22,6 +22,7 @@ void CMainGame::Initialize(HWND hWnd)
 	}
 	m_listObj[OBJ_PLAYER].push_back(CAbstractFactory<CPlayer>::Create());
 	m_listObj[OBJ_ENEMY_SHOTGUN].push_back(CAbstractFactory<CEnemyShotgun>::Create());
+	dynamic_cast<CEnemyShotgun*>(m_listObj[OBJ_ENEMY_SHOTGUN].front())->SetBulletList(&m_listObj[OBJ_SHOTGUN_BULLET]);
 	//InputManager ÃÊ±âÈ­
 	CInputManager::GetInst()->Initialize();
 }
@@ -32,8 +33,8 @@ void CMainGame::Update()
 	float fDeltaTime = CTimeManager::GetInst()->GetDeltaTime();
 	for (size_t i = 0; i < OBJ_END; ++i)
 	{
-		for (auto iter = m_listObj->begin();
-			iter != m_listObj->end();)
+		for (auto iter = m_listObj[i].begin();
+			iter != m_listObj[i].end();)
 		{
 			int iResult = (*iter)->Update(fDeltaTime);
 			if (iResult == DEAD)

@@ -13,8 +13,8 @@ void CPlayer::Initialize()
 	//중력 점프용 변수
 	m_fVelX = 0.f;
 	m_fVelY = 0.f;
-	m_fGravity = 1000.f;
-	m_fJumpPower = 600.f;
+	m_fGravity = 2500.f;
+	m_fJumpPower = 1000.f;
 	m_bOnGround = false;
 	m_bAttachWall = false;
 	//대쉬용 변수
@@ -117,19 +117,19 @@ void CPlayer::ResolveTileCollision()
 		m_fVelY = 0.f; //땅에 닿았을 때 프레임마다 중력 0 초기화 
 		m_bOnGround = true;
 	}
-	/*
+	
 	//충돌 처리 
 	if (m_tRect.left <= 0)
 	{
-		m_tInfo.fX = WINCX - m_tInfo.fCX * 0.5f;
+		m_tInfo.fX = m_tInfo.fCX * 0.5f;
 		m_bAttachWall = true;
 	}
 	if (m_tRect.right >= WINCX)
 	{
-		m_tInfo.fX = m_tRect.right - m_tInfo.fCX * 0.5f;
+		m_tInfo.fX = WINCX - m_tInfo.fCX * 0.5f;
 		m_bAttachWall = true;
 	}
-	*/
+	
 }
 
 void CPlayer::Late_Update(float fDeltaTime)
@@ -160,31 +160,30 @@ void CPlayer::GetKeyInput()
 		m_bOnGround = false;
 	}
 	if (m_pInput->KeyPress(eKey::DOWN)) {} //웅크리기 
-	if(m_pInput->KeyPress(eKey::LEFT))
-	{
-		m_fVelX = -m_fSpeed;
-	}
-	if (m_pInput->KeyPress(eKey::RIGHT))
-	{
-		m_fVelX = m_fSpeed;
-	}
+	if(m_pInput->KeyPress(eKey::LEFT)) m_fVelX = -m_fSpeed;
+	if (m_pInput->KeyPress(eKey::RIGHT)) m_fVelX = m_fSpeed;
+
 	//대쉬
-	if (m_pInput->KeyPress(eKey::DOWN))
+	if (m_pInput->KeyDown(eKey::DOWN))
 	{
-		if (m_pInput->KeyPress(eKey::LEFT))
+		if (m_pInput->KeyPress(eKey::LEFT) && !m_bUseDash)
 		{
 			m_fDashDir = -1.f;
 			m_bUseDash = true;
 		}
-		else if (m_pInput->KeyPress(eKey::RIGHT))
+		else if (m_pInput->KeyPress(eKey::RIGHT) && !m_bUseDash)
 		{
 			m_fDashDir = 1.f;
 			m_bUseDash = true;
 		}
 	}
 	//공격
-	if (m_pInput->KeyPress(eKey::ATTACK_LEFT) ||
-		m_pInput->KeyPress(eKey::ATTACK_RIGHT))
+	if (!m_bAttacking && m_pInput->KeyDown(eKey::ATTACK_LEFT))
+	{
+		SetAttackDir();
+		m_bAttacking = true;
+	}
+	if (!m_bAttacking && m_pInput->KeyDown(eKey::ATTACK_RIGHT))
 	{
 		SetAttackDir();
 		m_bAttacking = true;

@@ -129,6 +129,7 @@
   <ItemGroup>
     <ClInclude Include="CAbstractFactory.h" />
     <ClInclude Include="CBackBuffer.h" />
+    <ClInclude Include="CBullet.h" />
     <ClInclude Include="CCollisionMgr.h" />
     <ClInclude Include="CEnemyShotgun.h" />
     <ClInclude Include="CInputManager.h" />
@@ -145,6 +146,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="CBackBuffer.cpp" />
+    <ClCompile Include="CBullet.cpp" />
     <ClCompile Include="CCollisionMgr.cpp" />
     <ClCompile Include="CEnemyShotgun.cpp" />
     <ClCompile Include="CInputManager.cpp" />
