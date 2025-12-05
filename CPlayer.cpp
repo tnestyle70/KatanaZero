@@ -19,9 +19,11 @@ void CPlayer::Initialize()
 	m_bAttachWall = false;
 	//대쉬용 변수
 	m_bUseDash = false;
+	m_bIsInvincible = false;
 	m_fDashDir = 0.f;
 	m_fDashCoolTime = 0.f;
 	m_fDashDuration = DASH_DURATION;
+	m_fInfiniteTime = DASH_INFINITE_FRAME_TIME;
 	//공격용 변수 
 	m_bAttacking = false;
 	m_bAirAttack = false;
@@ -64,6 +66,9 @@ int CPlayer::Update(float fDeltaTime)
 
 	UpdateDash(fDeltaTime);
 
+	//이동이 완료된 상황에서의 Dir을 통해 FacingRight를 판단
+	m_bFacingRight = (m_fAttackDirX >= 0);
+
 	//중력, Dash, Attack, 물리가 적용된 결과 위치 적용
 	m_tInfo.fX += m_fVelX * fDeltaTime;
 	m_tInfo.fY += m_fVelY * fDeltaTime;
@@ -103,6 +108,7 @@ void CPlayer::UpdateDash(float fDeltaTime)
 		if (m_fDashDuration < 0.f)
 		{
 			m_bUseDash = false;
+			m_bIsInvincible = false;
 			m_fDashCoolTime = DASH_COOMTIME;
 			m_fDashDuration = DASH_DURATION;
 		}
@@ -129,7 +135,9 @@ void CPlayer::ResolveTileCollision()
 		m_tInfo.fX = WINCX - m_tInfo.fCX * 0.5f;
 		m_bAttachWall = true;
 	}
-	
+	//각도 보정
+	if (m_fAngle <= 0.f) m_fAngle += 360.f;
+	else if (m_fAngle >= 360.f) m_fAngle -= 360.f;
 }
 
 void CPlayer::Late_Update(float fDeltaTime)
@@ -143,10 +151,6 @@ void CPlayer::Release()
 void CPlayer::Render(HDC hDC)
 {
 	Rectangle(hDC, m_tRect.left, m_tRect.top, m_tRect.right, m_tRect.bottom);
-	//대쉬 쿨타임 디버깅
-	WCHAR cBuf[64];
-	swprintf_s(cBuf, L"마우스 좌표 : %.2f", m_pInput->GetMouseX());
-	TextOutW(hDC, 10, 10, cBuf, lstrlenW(cBuf));
 }
 
 void CPlayer::GetKeyInput()
@@ -160,7 +164,8 @@ void CPlayer::GetKeyInput()
 		m_bOnGround = false;
 	}
 	if (m_pInput->KeyPress(eKey::DOWN)) {} //웅크리기 
-	if(m_pInput->KeyPress(eKey::LEFT)) m_fVelX = -m_fSpeed;
+	if(m_pInput->KeyPress(eKey::LEFT)) 
+		m_fVelX = -m_fSpeed;
 	if (m_pInput->KeyPress(eKey::RIGHT)) m_fVelX = m_fSpeed;
 
 	//대쉬
@@ -170,11 +175,13 @@ void CPlayer::GetKeyInput()
 		{
 			m_fDashDir = -1.f;
 			m_bUseDash = true;
+			m_bIsInvincible = true;
 		}
 		else if (m_pInput->KeyPress(eKey::RIGHT) && !m_bUseDash)
 		{
 			m_fDashDir = 1.f;
 			m_bUseDash = true;
+			m_bIsInvincible = true;
 		}
 	}
 	//공격
@@ -199,4 +206,42 @@ void CPlayer::SetAttackDir()
 	//방향 정규화 
 	m_fAttackDirX = fDX / fLen;
 	m_fAttackDirY = fDY / fLen;
+}
+
+CPlayerMemento CPlayer::SaveToMemento() const
+{
+	CPlayerMemento mem{};
+	//위치
+	mem.fX = m_tInfo.fX;
+	mem.fY = m_tInfo.fY;
+	//속도
+	mem.fVelX = m_fVelX;
+	mem.fVelY = m_fVelY;
+	//방향, 시선
+	mem.fDirX = m_fDirX;
+	mem.fDirY = m_fDirY;
+	mem.bFacingRight = m_bFacingRight;
+	//생사
+	mem.bDead = m_bDead;
+	//애니메이션 상태
+	mem.iAnimState = m_eAnim;
+	//땅, 벽
+	mem.bOnGround = m_bOnGround;
+	mem.bAttackWall = m_bAttachWall;
+	//대쉬
+	mem.bUseDash = m_bUseDash;
+	mem.fDashCoolTime = m_fDashCoolTime;
+	mem.fDashRemainTime = m_fDashDuration;
+	//공격
+	mem.bAttacking = m_bAttacking;
+	mem.fAttackCoolTime = m_fAttackCoolTime;
+	mem.fAttackRemainTime = m_fAttackDuration;
+	//시간 조절
+	//mem.fSlowGauge = 
+
+	return CPlayerMemento();
+}
+
+void CPlayer::RestoreFromMemento(const CPlayerMemento& memento)
+{
 }

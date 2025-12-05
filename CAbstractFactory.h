@@ -16,15 +16,9 @@ public:
 	//위치 초기화
 	static CObj* Create(float fX, float fY)
 	{
-		CObj* pObj = new T(fX, fY);
-		pObj->Intialize();
-		return pObj;
-	}
-	//크기, 위치 초기화
-	static CObj* Create(float fCX, float fCY, float fX, float fY)
-	{
-		CObj* pObj = new T(fCX, fCY, fX, fY);
-		pObj->Intialize();
+		CObj* pObj = new T;
+		pObj->Initialize();
+		pObj->SetPos(fX, fY);
 		return pObj;
 	}
 };

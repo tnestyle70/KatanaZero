@@ -13,6 +13,36 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="소스 파일\00.Pattern&amp;Mgr">
+      <UniqueIdentifier>{aba001b3-0141-4e86-a9bd-4e0a36956a4c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\01.Player">
+      <UniqueIdentifier>{c2d2f9d9-6803-4fec-ac88-347e5417b3cb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\02.Enemy">
+      <UniqueIdentifier>{945fbe1f-f191-4ce1-921b-e1168cb544e6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\02.Enemy\Boss">
+      <UniqueIdentifier>{1fea2be6-96f0-4e11-b6f7-384c2d496979}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\02.Enemy\ShotGun">
+      <UniqueIdentifier>{e35fa610-cfaf-43ad-95c8-aa6505862e2f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\03.Render">
+      <UniqueIdentifier>{f5c47057-c4c0-4352-86dc-fe785711c6f6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\04.Bullet">
+      <UniqueIdentifier>{b713d6fe-029c-4f13-af47-056f461c781d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\02.Enemy\Melee">
+      <UniqueIdentifier>{54be5f2a-5d31-4a2a-b72e-e69e028af11a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\02.Enemy\Ranger">
+      <UniqueIdentifier>{aff61cea-47aa-47e2-bc56-6765cc9ee8d9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\02.Enemy\CEnemy">
+      <UniqueIdentifier>{649a31de-e65f-43d9-9a3f-1169b846d60e}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h">
@@ -30,9 +60,6 @@
     <ClInclude Include="pch.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="CCollisionMgr.h">
-      <Filter>소스 파일</Filter>
-    </ClInclude>
     <ClInclude Include="Define.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
@@ -42,33 +69,60 @@
     <ClInclude Include="CObj.h">
       <Filter>소스 파일</Filter>
     </ClInclude>
+    <ClInclude Include="CParry.h">
+      <Filter>소스 파일</Filter>
+    </ClInclude>
     <ClInclude Include="CAbstractFactory.h">
-      <Filter>소스 파일</Filter>
-    </ClInclude>
-    <ClInclude Include="CPlayer.h">
-      <Filter>소스 파일</Filter>
-    </ClInclude>
-    <ClInclude Include="CInputManager.h">
-      <Filter>소스 파일</Filter>
+      <Filter>소스 파일\00.Pattern&amp;Mgr</Filter>
     </ClInclude>
     <ClInclude Include="CTimeManager.h">
-      <Filter>소스 파일</Filter>
+      <Filter>소스 파일\00.Pattern&amp;Mgr</Filter>
     </ClInclude>
-    <ClInclude Include="CBackBuffer.h">
-      <Filter>소스 파일</Filter>
+    <ClInclude Include="CInputManager.h">
+      <Filter>소스 파일\00.Pattern&amp;Mgr</Filter>
+    </ClInclude>
+    <ClInclude Include="CCollisionMgr.h">
+      <Filter>소스 파일\00.Pattern&amp;Mgr</Filter>
+    </ClInclude>
+    <ClInclude Include="CPlayer.h">
+      <Filter>소스 파일\01.Player</Filter>
     </ClInclude>
     <ClInclude Include="CEnemyShotgun.h">
-      <Filter>소스 파일</Filter>
+      <Filter>소스 파일\02.Enemy\ShotGun</Filter>
+    </ClInclude>
+    <ClInclude Include="CDoctorBoss.h">
+      <Filter>소스 파일\02.Enemy\Boss</Filter>
+    </ClInclude>
+    <ClInclude Include="CEnemyBoss.h">
+      <Filter>소스 파일\02.Enemy\Boss</Filter>
+    </ClInclude>
+    <ClInclude Include="CBackBuffer.h">
+      <Filter>소스 파일\03.Render</Filter>
     </ClInclude>
     <ClInclude Include="CBullet.h">
-      <Filter>소스 파일</Filter>
+      <Filter>소스 파일\04.Bullet</Filter>
+    </ClInclude>
+    <ClInclude Include="CPlayerMemento.h">
+      <Filter>소스 파일\01.Player</Filter>
+    </ClInclude>
+    <ClInclude Include="CEnemyMelee.h">
+      <Filter>소스 파일\02.Enemy\Melee</Filter>
+    </ClInclude>
+    <ClInclude Include="CEnemyRanger.h">
+      <Filter>소스 파일\02.Enemy\Ranger</Filter>
+    </ClInclude>
+    <ClInclude Include="CEnemy.h">
+      <Filter>소스 파일\02.Enemy\CEnemy</Filter>
+    </ClInclude>
+    <ClInclude Include="CLeadingBullet.h">
+      <Filter>소스 파일\04.Bullet</Filter>
+    </ClInclude>
+    <ClInclude Include="CObjMgr.h">
+      <Filter>소스 파일\00.Pattern&amp;Mgr</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="KatanaZero.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
-    <ClCompile Include="CCollisionMgr.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
     <ClCompile Include="CMainGame.cpp">
@@ -77,23 +131,50 @@
     <ClCompile Include="CObj.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="CPlayer.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
-    <ClCompile Include="CInputManager.cpp">
+    <ClCompile Include="CParry.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
     <ClCompile Include="CTimeManager.cpp">
-      <Filter>소스 파일</Filter>
+      <Filter>소스 파일\00.Pattern&amp;Mgr</Filter>
     </ClCompile>
-    <ClCompile Include="CBackBuffer.cpp">
-      <Filter>소스 파일</Filter>
+    <ClCompile Include="CInputManager.cpp">
+      <Filter>소스 파일\00.Pattern&amp;Mgr</Filter>
+    </ClCompile>
+    <ClCompile Include="CCollisionMgr.cpp">
+      <Filter>소스 파일\00.Pattern&amp;Mgr</Filter>
+    </ClCompile>
+    <ClCompile Include="CPlayer.cpp">
+      <Filter>소스 파일\01.Player</Filter>
     </ClCompile>
     <ClCompile Include="CEnemyShotgun.cpp">
-      <Filter>소스 파일</Filter>
+      <Filter>소스 파일\02.Enemy\ShotGun</Filter>
+    </ClCompile>
+    <ClCompile Include="CDoctorBoss.cpp">
+      <Filter>소스 파일\02.Enemy\Boss</Filter>
+    </ClCompile>
+    <ClCompile Include="CEnemyBoss.cpp">
+      <Filter>소스 파일\02.Enemy\Boss</Filter>
+    </ClCompile>
+    <ClCompile Include="CBackBuffer.cpp">
+      <Filter>소스 파일\03.Render</Filter>
     </ClCompile>
     <ClCompile Include="CBullet.cpp">
-      <Filter>소스 파일</Filter>
+      <Filter>소스 파일\04.Bullet</Filter>
+    </ClCompile>
+    <ClCompile Include="CEnemyMelee.cpp">
+      <Filter>소스 파일\02.Enemy\Melee</Filter>
+    </ClCompile>
+    <ClCompile Include="CEnemyRanger.cpp">
+      <Filter>소스 파일\02.Enemy\Ranger</Filter>
+    </ClCompile>
+    <ClCompile Include="CEnemy.cpp">
+      <Filter>소스 파일\02.Enemy\CEnemy</Filter>
+    </ClCompile>
+    <ClCompile Include="CLeadingBullet.cpp">
+      <Filter>소스 파일\04.Bullet</Filter>
+    </ClCompile>
+    <ClCompile Include="CObjMgr.cpp">
+      <Filter>소스 파일\00.Pattern&amp;Mgr</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

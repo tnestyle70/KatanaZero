@@ -1,17 +1,18 @@
 #include "pch.h"
 #include "CCollisionMgr.h"
+#include "CBullet.h"
 
-void CCollisionMgr::RectCollide(list<CObj*> Dst, list<CObj*> Src)
+void CCollisionMgr::RectCollide(list<CObj*> EnemyBullet, list<CObj*> Player)
 {
 	RECT rc = {};
-	for (auto& pDst : Dst)
+	for (auto& pBullet : EnemyBullet)
 	{
-		for (auto& pSrc : Src)
+		for (auto& pPlayer : Player)
 		{
-			if (IntersectRect(&rc, pDst->GetRect(), pSrc->GetRect()))
+			if (IntersectRect(&rc, pBullet->GetRect(), pPlayer->GetRect()))
 			{
-				pDst->SetDead();
-				pSrc->SetDead();
+				pBullet->SetDead();
+				//pPlayer->SetDead();
 			}
 		}
 	}
@@ -41,4 +42,20 @@ bool CCollisionMgr::CheckCircle(CObj* pDst, CObj* pSrc)
 	float fRadiusSum = pDst->GetInfo()->fCX * 0.5f + pSrc->GetInfo()->fCY * 0.5f;
 	
 	return fDistance <= fRadiusSum;
+}
+
+void CCollisionMgr::ParryBullet(list<CObj*> listParry, list<CObj*> listEnemyBullet)
+{
+	RECT rc = {};
+	for (CObj* pParry : listParry)
+	{
+		for (CObj* pEnemyBullet : listEnemyBullet)
+		{
+			if (IntersectRect(&rc, pParry->GetRect(), pEnemyBullet->GetRect()))
+			{
+				dynamic_cast<CBullet*>(pEnemyBullet)->OnParried();
+				pEnemyBullet->SetDead();
+			}
+		}
+	}
 }

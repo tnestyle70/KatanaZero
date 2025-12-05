@@ -6,7 +6,7 @@
 class CMainGame
 {
 public:
-	CMainGame() {};
+	CMainGame();
 	~CMainGame();
 public:
 	void Initialize(HWND m_hWnd);
@@ -16,6 +16,6 @@ public:
 	void Release();
 private:
 	HWND m_hWnd;
-	list<CObj*> m_listObj[OBJ_END];
+	//list<CObj*> m_listObj[OBJ_END];
 	CBackBuffer m_BackBuffer;
 };

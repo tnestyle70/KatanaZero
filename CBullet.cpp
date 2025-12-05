@@ -13,16 +13,36 @@ void CBullet::Initialize()
 {
 	m_tInfo.fCX = 10.f;
 	m_tInfo.fCY = 10.f;
-	m_fSpeed = 300.f;
+	m_fSpeed = 1500.f; 
+	m_bStart = false;
 }
 
 int CBullet::Update(float fDeltaTime)
 {
 	if (m_bDead)
 		return DEAD;
-	//방향 X 속도로 위치를 업데이트해준다.SetDir()으로 shotgunenemy의 위치를 기준으로 총알을 생성한다.
-	m_tInfo.fX += m_fSpeed * m_fDirX;
-	m_tInfo.fY += m_fSpeed * m_fDirY;
+	if (!m_bStart)
+	{
+		float fDX = m_pTarget->GetInfo()->fX - m_tInfo.fX;
+		float fDY = m_pTarget->GetInfo()->fY - m_tInfo.fY;
+		//빗변 구하기
+		float fDistance = sqrtf(fDX * fDX + fDY * fDY);
+
+		float fCeta = acosf(fDX / fDistance);
+		float fDegree = fCeta * (180 / PI);
+
+		if (fDY <= 0)
+		{
+			fDegree = 360 - fDegree;
+		}
+		m_fInitAngle = fDegree;
+		m_bStart = true;
+	}
+	//구한 세타값을 기준으로 이동
+	m_tInfo.fX += m_fSpeed * fDeltaTime * cosf((m_fInitAngle + m_fAngle)* (PI / 180));
+	m_tInfo.fY += m_fSpeed * fDeltaTime * sinf((m_fInitAngle + m_fAngle) * (PI / 180));
+
+	__super::Update_Rect();
 
 	return NOEVENT;
 }
@@ -36,5 +56,10 @@ void CBullet::Release()
 }
 
 void CBullet::Render(HDC hDC)
+{
+	Rectangle(hDC, m_tRect.left, m_tRect.top, m_tRect.right, m_tRect.bottom);
+}
+
+void CBullet::OnParried()
 {
 }

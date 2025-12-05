@@ -1,6 +1,12 @@
 #pragma once
 #include "Define.h"
 #include "CObj.h"
+#include "CPlayerMemento.h"
+
+enum ePlayerAnim
+{
+	IDLE, MOVE ,DASH, GROUND_ATTACK, AIR_ATTCK, END_ANIM
+};
 
 class CInputManager;
 
@@ -21,8 +27,17 @@ public:
 	void ResolveTileCollision();
 	void GetKeyInput();
 	void SetAttackDir();
+public:
+	//메멘토 복원 함수
+	CPlayerMemento SaveToMemento() const;
+	void RestoreFromMemento(const CPlayerMemento& memento);
+public:
+	//패링시 방향 확인용 함수
+	bool IsFacingRight() { return m_bFacingRight; }
 private:
 	CInputManager* m_pInput;
+	//애니메이션
+	ePlayerAnim m_eAnim;
 	//중력/점프용 변수
 	float m_fVelY;
 	float m_fVelX;
@@ -30,11 +45,13 @@ private:
 	float m_fJumpPower;
 	bool m_bOnGround;
 	bool m_bAttachWall;
-	//대쉬용 변수 
+	//대쉬용 변수
 	bool m_bUseDash;
+	bool m_bIsInvincible;
 	float m_fDashDir;
 	float m_fDashCoolTime;
 	float m_fDashDuration;
+	float m_fInfiniteTime;
 	//공격용 변수
 	bool m_bAttacking;
 	bool m_bAirAttack;
@@ -43,4 +60,9 @@ private:
 	float m_fAttackCoolTime;
 	float m_fAttackDirX;
 	float m_fAttackDirY;
+	//패링
+	bool m_bFacingRight;
+private:
+	//메멘토 복원용 멤버 변수
+	bool m_bRewindingLock;
 };

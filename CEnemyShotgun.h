@@ -1,7 +1,7 @@
 #pragma once
-#include "CObj.h"
+#include "CEnemy.h"
 
-class CEnemyShotgun : public CObj
+class CEnemyShotgun : public CEnemy
 {
 public:
 	CEnemyShotgun();
@@ -13,10 +13,15 @@ public:
 	void Release() override;
 	void Render(HDC hDC) override;
 public:
-	void SetBulletList(list<CObj*>* pBulletList) {m_pBulletList = pBulletList;};
-	void SetShotGunEnemyDir();
+	void OnHit(int iDamage)override;
+public:
+	//void SetBulletList(list<CObj*>* pBulletList) {m_pBulletList = pBulletList;};
+	void CreateBullet();
 	void ResolveCollision();
 	void SetBulletDir();
 private:
-	list<CObj*>* m_pBulletList;
+	//list<CObj*>* m_pBulletList;
+	float m_fAttackCoolTime;
+	float m_fStep;
+	float m_fBulletAngle;
 };
