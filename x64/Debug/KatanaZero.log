@@ -1,12 +1,15 @@
-﻿  CEnemyShotgun.cpp
-  CMainGame.cpp
-C:\Users\tnest\source\repos\카타나제로\KatanaZero\KatanaZero\CEnemyShotgun.cpp(42,54): warning C4244: '인수': 'double'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-C:\Users\tnest\source\repos\카타나제로\KatanaZero\KatanaZero\CEnemyShotgun.cpp(43,54): warning C4244: '인수': 'double'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+﻿  CMainGame.cpp
 C:\Users\tnest\source\repos\카타나제로\KatanaZero\KatanaZero\CInputManager.h(19,38): warning C4244: 'return': 'LONG'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
   (소스 파일 'CMainGame.cpp'을(를) 컴파일하는 중)
   
 C:\Users\tnest\source\repos\카타나제로\KatanaZero\KatanaZero\CInputManager.h(20,38): warning C4244: 'return': 'LONG'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
   (소스 파일 'CMainGame.cpp'을(를) 컴파일하는 중)
   
+  CTimeManager.cpp
+C:\Users\tnest\source\repos\카타나제로\KatanaZero\KatanaZero\CTimeManager.cpp(9,31): warning C4244: '=': 'ULONGLONG'에서 'DWORD'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\tnest\source\repos\카타나제로\KatanaZero\KatanaZero\CTimeManager.cpp(16,22): warning C4244: '초기화 중': 'ULONGLONG'에서 'DWORD'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+  KatanaZero.cpp
+C:\Users\tnest\source\repos\카타나제로\KatanaZero\KatanaZero\KatanaZero.cpp(47,22): warning C4244: '초기화 중': 'ULONGLONG'에서 'DWORD'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\tnest\source\repos\카타나제로\KatanaZero\KatanaZero\KatanaZero.cpp(66,29): warning C4244: '초기화 중': 'ULONGLONG'에서 'DWORD'(으)로 변환하면서 데이터가 손실될 수 있습니다.
   코드를 생성하고 있습니다...
   KatanaZero.vcxproj -> C:\Users\tnest\source\repos\카타나제로\KatanaZero\x64\Debug\KatanaZero.exe

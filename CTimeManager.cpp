@@ -7,13 +7,8 @@ CTimeManager* CTimeManager::m_pInst = nullptr;
 void CTimeManager::Initialize()
 {
 	m_dwPrevTime = GetTickCount64();
-	m_fDeltaTime = 0.f;
 	m_fTimeScale = 1.f;
-	m_fTargetScale = 1.f;
-	m_fStartScale = 1.f;
 	m_fLerpDuration = 0.f;
-	m_fLerpElapsed = 0.f;
-	m_bSlowMotion = false;
 }
 
 void CTimeManager::Update()
@@ -23,39 +18,24 @@ void CTimeManager::Update()
 	m_dwPrevTime = dwCurrentTime;
 	//ms -> s
 	m_fDeltaTime = dwDiff / 1000.f;
-	/*
-	//튀는 프레임 방지
-	if (m_fDeltaTime > 0.033f)
-		m_fDeltaTime = 0.033f;
-		*/
-	/*
+	
 	//타임스케일 보간
 	if (m_fLerpDuration > 0.f)
 	{
-		m_fLerpElapsed += m_fDeltaTime;
-		float t = std::min(m_fLerpElapsed / m_fLerpDuration, 1.f);
-		//선형보간
-		m_fTimeScale = m_fStartScale + (m_fTargetScale - m_fStartScale) * t;
-
-		if (t >= 1.f)
+		m_fDeltaTime *= m_fTimeScale;
+		m_fLerpDuration -= m_fDeltaTime;
+		if (m_fLerpDuration < 0.f)
 		{
+			m_fTimeScale = 1.f;
 			m_fLerpDuration = 0.f;
-			m_fLerpElapsed = 0.f;
-			m_fTimeScale = m_fTargetScale;
 		}
 	}
-	*/
 }
 
-void CTimeManager::SetSlowMotion(bool bEnable, float fLerpTime)
+void CTimeManager::SetSlowMotion(float fLerpTime)
 {
-	if (m_bSlowMotion == bEnable)
-		return;
-	m_bSlowMotion = bEnable;
-	m_fStartScale = m_fTimeScale;
-	m_fTargetScale = bEnable ? 0.2f : 1.f;
-	m_fLerpDuration = fLerpTime;
-	m_fLerpElapsed = 0.f;
+	m_fTimeScale = fLerpTime;
+	m_fLerpDuration = 0.05f;
 }
 
 CTimeManager* CTimeManager::GetInst()

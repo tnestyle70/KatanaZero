@@ -56,8 +56,8 @@ void CMainGame::Update()
 	CInputManager::GetInst()->Update();
 
 	//Shift키 입력에 따른 TimeManager의 TimeScale 조정
-	//bool bShiftPress = CInputManager::GetInst()->KeyPress(TIME_SLOW);
-	//CTimeManager::GetInst()->SetSlowMotion(bShiftPress, 0.15f);
+	if (CInputManager::GetInst()->KeyPress(eKey::TIME_SLOW))
+		CTimeManager::GetInst()->SetSlowMotion(0.15f);
 
 	//Shift 보정한 시간값 사용
 	float fDeltaTime = CTimeManager::GetInst()->GetDeltaTime();

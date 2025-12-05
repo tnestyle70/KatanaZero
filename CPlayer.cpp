@@ -164,7 +164,7 @@ void CPlayer::GetKeyInput()
 		m_bOnGround = false;
 	}
 	if (m_pInput->KeyPress(eKey::DOWN)) {} //웅크리기 
-	if(m_pInput->KeyPress(eKey::LEFT)) 
+	if (m_pInput->KeyPress(eKey::LEFT)) 
 		m_fVelX = -m_fSpeed;
 	if (m_pInput->KeyPress(eKey::RIGHT)) m_fVelX = m_fSpeed;
 
@@ -184,17 +184,23 @@ void CPlayer::GetKeyInput()
 			m_bIsInvincible = true;
 		}
 	}
-	//공격
+	//공격 
 	if (!m_bAttacking && m_pInput->KeyDown(eKey::ATTACK_LEFT))
 	{
 		SetAttackDir();
 		TryParry();
 		m_bAttacking = true;
 	}
+	//공격 - 오브젝트 던지기
 	if (!m_bAttacking && m_pInput->KeyDown(eKey::ATTACK_RIGHT))
 	{
 		SetAttackDir();
 		m_bAttacking = true;
+	}
+	//타임 슬로우
+	if (m_pInput->KeyDown(eKey::TIME_SLOW))
+	{
+		
 	}
 }
 
