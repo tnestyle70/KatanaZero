@@ -43,6 +43,9 @@
     <Filter Include="소스 파일\02.Enemy\CEnemy">
       <UniqueIdentifier>{649a31de-e65f-43d9-9a3f-1169b846d60e}</UniqueIdentifier>
     </Filter>
+    <Filter Include="소스 파일\02.Enemy\Boss\Clone&amp;Eye">
+      <UniqueIdentifier>{9121449c-2fbc-4edd-985d-89f3b6cb0444}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h">
@@ -120,6 +123,12 @@
     <ClInclude Include="CObjMgr.h">
       <Filter>소스 파일\00.Pattern&amp;Mgr</Filter>
     </ClInclude>
+    <ClInclude Include="CDoctorClone.h">
+      <Filter>소스 파일\02.Enemy\Boss\Clone&amp;Eye</Filter>
+    </ClInclude>
+    <ClInclude Include="CParryBullet.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="KatanaZero.cpp">
@@ -175,6 +184,12 @@
     </ClCompile>
     <ClCompile Include="CObjMgr.cpp">
       <Filter>소스 파일\00.Pattern&amp;Mgr</Filter>
+    </ClCompile>
+    <ClCompile Include="CDoctorClone.cpp">
+      <Filter>소스 파일\02.Enemy\Boss\Clone&amp;Eye</Filter>
+    </ClCompile>
+    <ClCompile Include="CParryBullet.cpp">
+      <Filter>소스 파일</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

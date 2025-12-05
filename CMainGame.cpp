@@ -39,20 +39,11 @@ void CMainGame::Initialize(HWND hWnd)
 	CObj* pEnemyShotgun = CAbstractFactory<CEnemyShotgun>::Create(); 
 	CObjMgr::Get_Instance()->Add_Object(OBJ_ENEMY_SHOTGUN, pEnemyShotgun);
 	pEnemyShotgun->SetTarget(pPlayer);
-	//dynamic_cast<CEnemyShotgun*>(pEnemyShotgun)->SetBulletList(&m_listObj[OBJ_BULLET]);
 	
 	//Boss Enemy 생성 후 BulletList 할당
 	CObj* pEnemyDoctorBoss = CAbstractFactory<CDoctorBoss>::Create();
 	CObjMgr::Get_Instance()->Add_Object(OBJ_DOCTOR_BOSS, pEnemyDoctorBoss);
-	//m_listObj[OBJ_BOSS].push_back(pEnemyDoctorBoss);
 	pEnemyDoctorBoss->SetTarget(pPlayer);
-	//dynamic_cast<CEnemyBoss*>(pEnemyDoctorBoss)->SetBulletList(&m_listObj[OBJ_BOSS_BULLET]);
-	
-	//Parry Object 생성 후 플레이어 할당
-	CObj* pParry = CAbstractFactory<CParry>::Create();
-	CObjMgr::Get_Instance()->Add_Object(OBJ_PARRY, pParry);
-	//m_listObj[OBJ_PARRY].push_back(pParry);
-	pParry->SetTarget(pPlayer);
 	
 	//InputManager 초기화
 	CInputManager::GetInst()->Initialize();

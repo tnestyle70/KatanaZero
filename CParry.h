@@ -13,12 +13,16 @@ public:
 	void Render(HDC hDC) override;
 	void Release() override;
 public:
-	void SetFacingRight(bool bFacingRight) { m_bFacingRight = bFacingRight; }
+	void OnParry(CObj* pBullet) { m_pBullet = pBullet; }
+	void SuccessParry() { m_bSuccessParry = true; }
+	void SetOwner(CObj* pOwner) { pOwner = m_pOwner; }
+	void CreateParryBullet();
 private:
 	void FollowPlayer(float fDeltaTime);
 private:
-	float m_fLifeTime;
-	float m_fAccTime;
+	CObj* m_pOwner;
+	CObj* m_pBullet;
+	float m_fActiveTime;
+	bool m_bSuccessParry;
 	bool m_bActive;
-	bool m_bFacingRight;
 };

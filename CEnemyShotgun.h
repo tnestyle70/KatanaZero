@@ -15,12 +15,10 @@ public:
 public:
 	void OnHit(int iDamage)override;
 public:
-	//void SetBulletList(list<CObj*>* pBulletList) {m_pBulletList = pBulletList;};
 	void CreateBullet();
 	void ResolveCollision();
 	void SetBulletDir();
 private:
-	//list<CObj*>* m_pBulletList;
 	float m_fAttackCoolTime;
 	float m_fStep;
 	float m_fBulletAngle;

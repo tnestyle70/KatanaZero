@@ -1,9 +1,13 @@
 #include "pch.h"
 #include "CCollisionMgr.h"
+#include "CParry.h"
 #include "CBullet.h"
 
 void CCollisionMgr::RectCollide(list<CObj*> EnemyBullet, list<CObj*> Player)
 {
+	if (EnemyBullet.empty()) return;
+	if (Player.empty()) return;
+
 	RECT rc = {};
 	for (auto& pBullet : EnemyBullet)
 	{
@@ -13,6 +17,25 @@ void CCollisionMgr::RectCollide(list<CObj*> EnemyBullet, list<CObj*> Player)
 			{
 				pBullet->SetDead();
 				//pPlayer->SetDead();
+			}
+		}
+	}
+}
+
+void CCollisionMgr::ParryCollide(list<CObj*>& listParry, list<CObj*>& listBullet)
+{
+	if (listParry.empty()) return;
+	if (listBullet.empty()) return;
+
+	RECT rc = {};
+	for (auto& pParry : listParry)
+	{
+		for (auto& pBullet : listBullet)
+		{
+			if (IntersectRect(&rc, pParry->GetRect(), pBullet->GetRect()))
+			{
+				dynamic_cast<CParry*>(pParry)->SuccessParry();
+				pBullet->SetDead();
 			}
 		}
 	}

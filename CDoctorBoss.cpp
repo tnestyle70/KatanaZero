@@ -2,6 +2,7 @@
 #include "CObjMgr.h"
 #include "CAbstractFactory.h"
 #include "CDoctorBoss.h"
+#include "CDoctorClone.h"
 #include "CBullet.h"
 
 CDoctorBoss::CDoctorBoss()
@@ -16,13 +17,22 @@ void CDoctorBoss::Initialize()
 {
 	m_tInfo = { WINCX >> 1, 200.f, 100.f, 100.f };
 	m_eCurrentPattern = eDoctorPattern::FALLING_BULLET;
+	m_fPatternTime = 3.f;
 	m_fAngle = 0.f;
-	m_fSpeed = 600.f;
+	m_fSpeed = 300.f;
 }
 
 int CDoctorBoss::Update(float fDeltaTime)
 {
-	UpdatePhase1(fDeltaTime);
+	if (m_fPatternTime > 0.f)
+	{
+		m_fPatternTime -= fDeltaTime;
+		if (m_fPatternTime <= 0.f)
+		{
+			UpdatePhase1(fDeltaTime);
+			m_fPatternTime = 3.f;
+		}
+	}
 
 	m_tInfo.fX += m_fSpeed * fDeltaTime * cosf(m_fAngle * (PI / 180));
 	m_tInfo.fY -= m_fSpeed * fDeltaTime * sinf(m_fAngle * (PI / 180));
@@ -83,10 +93,19 @@ void CDoctorBoss::UpdatePhase1(float fDeltaTime)
 	{
 	case eDoctorPattern::FALLING_BULLET:
 		Pattern_FallingBullet(fDeltaTime);
+		UpdateRandomSpawnClone();
 		break;
 	default:
 		break;
 	}
+}
+
+void CDoctorBoss::UpdateRandomSpawnClone()
+{
+	float fRandX = rand() % WINCX;
+	float fRandY = rand() % WINCY;
+	CObj* pBossClone = CAbstractFactory<CDoctorClone>::Create(fRandX, fRandY);
+	CObjMgr::Get_Instance()->Add_Object(OBJ_DOCTOR_CLONE, pBossClone);
 }
 
 void CDoctorBoss::Pattern_FallingBullet(float fDeltaTime)

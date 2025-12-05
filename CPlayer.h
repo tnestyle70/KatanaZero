@@ -27,13 +27,11 @@ public:
 	void ResolveTileCollision();
 	void GetKeyInput();
 	void SetAttackDir();
+	void TryParry();
 public:
 	//메멘토 복원 함수
 	CPlayerMemento SaveToMemento() const;
 	void RestoreFromMemento(const CPlayerMemento& memento);
-public:
-	//패링시 방향 확인용 함수
-	bool IsFacingRight() { return m_bFacingRight; }
 private:
 	CInputManager* m_pInput;
 	//애니메이션
@@ -60,8 +58,6 @@ private:
 	float m_fAttackCoolTime;
 	float m_fAttackDirX;
 	float m_fAttackDirY;
-	//패링
-	bool m_bFacingRight;
 private:
 	//메멘토 복원용 멤버 변수
 	bool m_bRewindingLock;

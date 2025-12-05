@@ -1,8 +1,11 @@
 #include "pch.h"
 #include "CParry.h"
+#include "CObjMgr.h"
+#include "CAbstractFactory.h"
+#include "CParryBullet.h"
 
 CParry::CParry()
-	: m_fLifeTime(0.1f), m_fAccTime(0.f), m_bActive(false), m_bFacingRight(false)
+	: m_bActive(false), m_pBullet(nullptr), m_pOwner(nullptr)
 {
 }
 
@@ -13,24 +16,39 @@ CParry::~CParry()
 void CParry::Initialize()
 {
 	//패링 판정 넓이
-	m_tInfo.fCX = 40.f;
-	m_tInfo.fCY = 60.f;
+	m_tInfo.fCX = 100.f;
+	m_tInfo.fCY = 120.f;
 	m_bDead = false;
 	m_bActive = true;
+	m_fActiveTime = 0.2f;
+	m_bSuccessParry = false;
 }
 
 int CParry::Update(float fDeltaTime)
 {
 	if (m_bDead)
 		return DEAD;
-
+	
+	if (m_bSuccessParry)
+	{
+		CreateParryBullet();
+		m_bSuccessParry = false;
+	}
+	
 	//플레이어 추적
 	FollowPlayer(fDeltaTime);
 
-	//패링 경과 시간 체크
-	m_fAccTime += fDeltaTime;
-	if (m_fAccTime >= m_fLifeTime)
-		m_bDead = true;
+	if (m_bActive)
+	{
+		m_fActiveTime -= fDeltaTime;
+		if (m_fActiveTime < 0.f)
+		{
+			m_bActive = false;
+			m_fActiveTime = 0.2f;
+			m_bDead = true;
+			return DEAD;
+		}
+	}
 
 	__super::Update_Rect();
 
@@ -50,16 +68,17 @@ void CParry::Release()
 {
 }
 
+void CParry::CreateParryBullet()
+{
+	CObj* pBullet = CAbstractFactory<CParryBullet>::Create(m_tInfo.fX, m_tInfo.fY);
+	pBullet->SetDir(m_fDirX, m_fDirY);
+	CObjMgr::Get_Instance()->Add_Object(OBJ_PARRY_BULLET, pBullet);
+}
+
 void CParry::FollowPlayer(float fDeltaTime)
 {
-	const float m_fOffsetX = 30.f;
-	if (m_bFacingRight)
-	{
-		m_tInfo.fX = m_pTarget->GetInfo()->fX + m_fOffsetX;
-	}
-	else
-	{
-		m_tInfo.fX = m_pTarget->GetInfo()->fX - m_fOffsetX;
-	}
-	m_tInfo.fY = m_pTarget->GetInfo()->fY;
+	m_pOwner = CObjMgr::Get_Instance()->Get_Object(OBJ_PLAYER);
+
+	m_tInfo.fX = m_pOwner->GetInfo()->fX + m_fDirX * m_pOwner->GetInfo()->fCX * 0.5f;
+	m_tInfo.fY = m_pOwner->GetInfo()->fY + m_fDirY * m_pOwner->GetInfo()->fCX * 0.5f;
 }

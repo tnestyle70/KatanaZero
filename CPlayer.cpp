@@ -1,5 +1,8 @@
 #include "pch.h"
 #include "CPlayer.h"
+#include  "CObjMgr.h"
+#include "CAbstractFactory.h"
+#include "CParry.h"
 #include "CInputManager.h"
 
 CPlayer::~CPlayer()
@@ -65,9 +68,6 @@ int CPlayer::Update(float fDeltaTime)
 	m_fVelY += m_fGravity * fDeltaTime;
 
 	UpdateDash(fDeltaTime);
-
-	//이동이 완료된 상황에서의 Dir을 통해 FacingRight를 판단
-	m_bFacingRight = (m_fAttackDirX >= 0);
 
 	//중력, Dash, Attack, 물리가 적용된 결과 위치 적용
 	m_tInfo.fX += m_fVelX * fDeltaTime;
@@ -188,6 +188,7 @@ void CPlayer::GetKeyInput()
 	if (!m_bAttacking && m_pInput->KeyDown(eKey::ATTACK_LEFT))
 	{
 		SetAttackDir();
+		TryParry();
 		m_bAttacking = true;
 	}
 	if (!m_bAttacking && m_pInput->KeyDown(eKey::ATTACK_RIGHT))
@@ -208,6 +209,15 @@ void CPlayer::SetAttackDir()
 	m_fAttackDirY = fDY / fLen;
 }
 
+void CPlayer::TryParry()
+{
+	//패링 오브젝트만 생성하고 플레이어 추척은 패링 클래스에서 관리
+	SetAttackDir();
+	CObj* pParry = CAbstractFactory<CParry>::Create();
+	pParry->SetDir(m_fAttackDirX, m_fAttackDirY);
+	CObjMgr::Get_Instance()->Add_Object(OBJ_PARRY, pParry);
+}
+
 CPlayerMemento CPlayer::SaveToMemento() const
 {
 	CPlayerMemento mem{};
@@ -220,7 +230,6 @@ CPlayerMemento CPlayer::SaveToMemento() const
 	//방향, 시선
 	mem.fDirX = m_fDirX;
 	mem.fDirY = m_fDirY;
-	mem.bFacingRight = m_bFacingRight;
 	//생사
 	mem.bDead = m_bDead;
 	//애니메이션 상태

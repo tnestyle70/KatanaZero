@@ -66,8 +66,8 @@ void CObjMgr::Late_Update(float fDelatTime)
 			pObj->Late_Update(fDelatTime);
 		}
 	}
-	//CCollisionMgr::RectCollide(m_listObj[OBJ_ENEMY_SHOTGUN], m_listObj[OBJ_BULLET]);
-	//CCollisionMgr::RectCollide(m_listObj[OBJ_MONSTER], m_listObj[OBJ_MOUSE]);
+	CCollisionMgr::ParryCollide(m_listObj[OBJ_PARRY], m_listObj[OBJ_BULLET]);
+	//CCollisionMgr::RectCollide(m_listObj[OBJ_PARRY_BULLET], m_listObj[OBJ_DOCTOR_CLONE]);
 }
 
 void CObjMgr::Render(HDC hDC)
