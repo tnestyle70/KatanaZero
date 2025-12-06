@@ -130,6 +130,8 @@
     <ClInclude Include="CAbstractFactory.h" />
     <ClInclude Include="CBackBuffer.h" />
     <ClInclude Include="CBullet.h" />
+    <ClInclude Include="CBulletNormal.h" />
+    <ClInclude Include="CCamera.h" />
     <ClInclude Include="CCollisionMgr.h" />
     <ClInclude Include="CDoctorBoss.h" />
     <ClInclude Include="CDoctorClone.h" />
@@ -154,10 +156,13 @@
     <ClInclude Include="pch.h" />
     <ClInclude Include="Resource.h" />
     <ClInclude Include="targetver.h" />
+    <ClInclude Include="Vec2.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="CBackBuffer.cpp" />
     <ClCompile Include="CBullet.cpp" />
+    <ClCompile Include="CBulletNormal.cpp" />
+    <ClCompile Include="CCamera.cpp" />
     <ClCompile Include="CCollisionMgr.cpp" />
     <ClCompile Include="CDoctorBoss.cpp" />
     <ClCompile Include="CDoctorClone.cpp" />

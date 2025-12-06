@@ -4,7 +4,7 @@
 
 enum class eDoctorPattern
 {
-    FALLING_BULLET
+    ARM_ATTACK, FALLING_BULLET, EYE, MONSTER
 };
 
 class CDoctorBoss : public CEnemyBoss
@@ -21,6 +21,8 @@ public:
 private:
     void ResolveCollision();
     void UpdatePhase1(float fDeltaTime);
+    void UpdateOrbitClone();
+    void UpdateLineClone();
     void UpdateRandomSpawnClone();
     void Pattern_FallingBullet(float fDeltaTime);
     void SpawnFallingBullet();
