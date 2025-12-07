@@ -60,6 +60,29 @@ void CBullet::Render(HDC hDC)
 	Rectangle(hDC, m_tRect.left, m_tRect.top, m_tRect.right, m_tRect.bottom);
 }
 
+std::unique_ptr<ISnapshot> CBullet::SaveSnapshot() const
+{
+	auto snap = std::make_unique<BulletSnapshot>();
+
+	snap->fX = m_tInfo.fX;
+	snap->fY = m_tInfo.fY;
+	snap->fAngle = m_fAngle;
+	snap->fSpeed = m_fSpeed;
+	snap->bDead = m_bDead;
+
+	return snap;
+}
+
+void CBullet::LoadSnapshot(const ISnapshot& snapshot)
+{
+	auto& snap = static_cast<const BulletSnapshot&>(snapshot);
+
+	m_tInfo.fX = snap.fX;
+	m_tInfo.fY = snap.fY;
+	m_fAngle = snap.fAngle;
+	m_bDead = snap.bDead;
+}
+
 void CBullet::OnParried()
 {
 }

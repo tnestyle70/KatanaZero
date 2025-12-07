@@ -49,9 +49,9 @@ int CPlayer::Update(float fDeltaTime)
 	{
 		m_bRewinding = true;
 
-		if (m_dHistory.empty())
+		if (!m_dHistory.empty())
 		{
-			RestoreFromMemento(m_dHistory.back());
+			LoadSnapshotValue(m_dHistory.back());
 			m_dHistory.pop_back();
 		}
 		//되감기 중엔 정상 물리/입력 스킵
@@ -62,9 +62,9 @@ int CPlayer::Update(float fDeltaTime)
 		m_bRewinding = false;
 	}
 	//2.정상 상태일 때 Memento 저장
-	m_dHistory.push_back(SaveToMemento());
+	m_dHistory.push_back(SaveSnapshotValue());
 	//메모리 폭주 방지
-	const size_t MAX_HISTORY = 300;
+	const size_t MAX_HISTORY = 30000;
 	if (m_dHistory.size() > MAX_HISTORY)
 	{
 		m_dHistory.pop_front();
@@ -150,7 +150,6 @@ void CPlayer::ResolveTileCollision()
 		m_fVelY = 0.f; //땅에 닿았을 때 프레임마다 중력 0 초기화 
 		m_bOnGround = true;
 	}
-	
 	//충돌 처리 
 	if (m_tRect.left <= 0)
 	{
@@ -252,65 +251,124 @@ void CPlayer::TryParry()
 	CObjMgr::Get_Instance()->Add_Object(OBJ_PARRY, pParry);
 }
 
-CPlayerMemento CPlayer::SaveToMemento() const
+std::unique_ptr<ISnapshot> CPlayer::SaveSnapshot() const
 {
-	CPlayerMemento mem{};
-	//위치
-	mem.fX = m_tInfo.fX;
-	mem.fY = m_tInfo.fY;
-	//속도
-	mem.fVelX = m_fVelX;
-	mem.fVelY = m_fVelY;
-	//방향, 시선
-	mem.fDirX = m_fDirX;
-	mem.fDirY = m_fDirY;
-	//생사
-	mem.bDead = m_bDead;
-	//애니메이션 상태
-	mem.eAnimState = m_eAnim;
-	//땅, 벽
-	mem.bOnGround = m_bOnGround;
-	mem.bAttackWall = m_bAttachWall;
-	//대쉬
-	mem.bUseDash = m_bUseDash;
-	mem.fDashCoolTime = m_fDashCoolTime;
-	mem.fDashRemainTime = m_fDashDuration;
-	//공격
-	mem.bAttacking = m_bAttacking;
-	mem.fAttackCoolTime = m_fAttackCoolTime;
-	mem.fAttackRemainTime = m_fAttackDuration;
-	//시간 조절
-	//mem.fSlowGauge = m_fSlowGague;
+	auto snap = std::make_unique<PlayerSnapshot>();
 
-	return mem;
+	snap->fX = m_tInfo.fX;
+	snap->fY = m_tInfo.fY;
+	//속도
+	snap->fVelX = m_fVelX;
+	snap->fVelY = m_fVelY;
+	//방향, 시선
+	snap->fDirX = m_fDirX;
+	snap->fDirY = m_fDirY;
+	//생사
+	snap->bDead = m_bDead;
+	//애니메이션 상태
+	snap->eAnimState = m_eAnim;
+	//땅, 벽
+	snap->bOnGround = m_bOnGround;
+	snap->bAttachWall = m_bAttachWall;
+	//대쉬
+	snap->bUseDash = m_bUseDash;
+	snap->fDashCoolTime = m_fDashCoolTime;
+	snap->fDashRemainTime = m_fDashDuration;
+	//공격
+	snap->bAttacking = m_bAttacking;
+	snap->fAttackCoolTime = m_fAttackCoolTime;
+	snap->fAttackRemainTime = m_fAttackDuration;
+
+	return snap;
 }
 
-void CPlayer::RestoreFromMemento(const CPlayerMemento& mem)
+void CPlayer::LoadSnapshot(const ISnapshot& snapshot)
+{
+	auto& snap = static_cast<const PlayerSnapshot&>(snapshot);
+
+	//위치
+	m_tInfo.fX = snap.fX;
+	m_tInfo.fY = snap.fY;
+	//속도
+	m_fVelX = snap.fVelX;
+	m_fVelY = snap.fVelY;
+	//방향 시선
+	m_fDirX = snap.fDirX;
+	m_fDirY = snap.fDirY;
+	//생사
+	m_bDead = snap.bDead;
+	//애니메이션 상태
+	m_eAnim = snap.eAnimState;
+	//땅, 벽
+	m_bOnGround = snap.bOnGround;
+	m_bAttachWall = snap.bAttachWall;
+	//대쉬
+	m_bUseDash = snap.bUseDash;
+	m_fDashCoolTime = snap.fDashCoolTime;
+	m_fDashDuration = snap.fDashRemainTime;
+	//공격
+	m_bAttacking = snap.bAttacking;
+	m_fAttackCoolTime = snap.fAttackCoolTime;
+	m_fAttackDuration = snap.fAttackRemainTime;
+}
+
+PlayerSnapshot CPlayer::SaveSnapshotValue() const
+{
+	PlayerSnapshot snap{};
+
+	snap.fX = m_tInfo.fX;
+	snap.fY = m_tInfo.fY;
+	//속도
+	snap.fVelX = m_fVelX;
+	snap.fVelY = m_fVelY;
+	//방향, 시선
+	snap.fDirX = m_fDirX;
+	snap.fDirY = m_fDirY;
+	//생사
+	snap.bDead = m_bDead;
+	//애니메이션 상태
+	snap.eAnimState = m_eAnim;
+	//땅, 벽
+	snap.bOnGround = m_bOnGround;
+	snap.bAttachWall = m_bAttachWall;
+	//대쉬
+	snap.bUseDash = m_bUseDash;
+	snap.fDashCoolTime = m_fDashCoolTime;
+	snap.fDashRemainTime = m_fDashDuration;
+	//공격
+	snap.bAttacking = m_bAttacking;
+	snap.fAttackCoolTime = m_fAttackCoolTime;
+	snap.fAttackRemainTime = m_fAttackDuration;
+
+	return snap;
+}
+
+void CPlayer::LoadSnapshotValue(const PlayerSnapshot& snap)
 {
 	//위치
-	m_tInfo.fX = mem.fX;
-	m_tInfo.fY = mem.fY;
+	m_tInfo.fX = snap.fX;
+	m_tInfo.fY = snap.fY;
 	//속도
-	m_fVelX = mem.fVelX;
-	m_fVelY = mem.fVelY;
+	m_fVelX = snap.fVelX;
+	m_fVelY = snap.fVelY;
 	//방향 시선
-	m_fDirX = mem.fDirX;
-	m_fDirY = mem.fDirY;
+	m_fDirX = snap.fDirX;
+	m_fDirY = snap.fDirY;
 	//생사
-	m_bDead = mem.bDead;
+	m_bDead = snap.bDead;
 	//애니메이션 상태
-	m_eAnim = mem.eAnimState;
+	m_eAnim = snap.eAnimState;
 	//땅, 벽
-	m_bOnGround = mem.bOnGround;
-	m_bAttachWall = mem.bAttackWall;
+	m_bOnGround = snap.bOnGround;
+	m_bAttachWall = snap.bAttachWall;
 	//대쉬
-	m_bUseDash = mem.bUseDash;
-	m_fDashCoolTime = mem.fDashCoolTime;
-	m_fDashDuration = mem.fDashRemainTime;
+	m_bUseDash = snap.bUseDash;
+	m_fDashCoolTime = snap.fDashCoolTime;
+	m_fDashDuration = snap.fDashRemainTime;
 	//공격
-	m_bAttacking = mem.bAttacking;
-	m_fAttackCoolTime = mem.fAttackCoolTime;
-	m_fAttackDuration = mem.fAttackRemainTime;
-	
+	m_bAttacking = snap.bAttacking;
+	m_fAttackCoolTime = snap.fAttackCoolTime;
+	m_fAttackDuration = snap.fAttackRemainTime;
+	//프레임 꼬임 방지
 	__super::Update_Rect();
 }

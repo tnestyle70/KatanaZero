@@ -61,9 +61,14 @@ void CMainGame::Update()
 	CTimeManager::GetInst()->Update();
 	CInputManager::GetInst()->Update();
 
+
 	//Shift키 입력에 따른 TimeManager의 TimeScale 조정
 	if (CInputManager::GetInst()->KeyPress(eKey::TIME_SLOW))
 		CTimeManager::GetInst()->SetSlowMotion(0.15f);
+
+	//되감기 Memeto 호출
+	//if (CInputManager::GetInst()->KeyPress(eKey::REWIND))
+	//	CTimeManager::GetInst()->SetSlowMotion(0.0f);
 
 	//Shift 보정한 시간값 사용
 	float fDeltaTime = CTimeManager::GetInst()->GetDeltaTime();

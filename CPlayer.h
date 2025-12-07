@@ -1,12 +1,37 @@
 #pragma once
 #include "Define.h"
 #include "CObj.h"
-#include "CPlayerMemento.h"
+#include "IMemento.h"
 #include <deque>
+
+struct PlayerSnapshot : ISnapshot
+{
+	//위치, 크기
+	float fX, fY;
+	float fCX, fCY;
+	//속도, 방향
+	float fVelX, fVelY;
+	float fDirX, fDirY;
+	//생사
+	bool bDead;
+	//애니메이션
+	ePlayerAnim eAnimState;
+	//땅, 벽
+	bool bOnGround;
+	bool bAttachWall;
+	//대쉬
+	bool bUseDash;
+	float fDashCoolTime;
+	float fDashRemainTime;
+	//공격
+	bool bAttacking;
+	float fAttackCoolTime;
+	float fAttackRemainTime;
+};
 
 class CInputManager;
 
-class CPlayer : public CObj
+class CPlayer : public CObj, public IMemento
 {
 public:
 	CPlayer() {};
@@ -25,9 +50,10 @@ public:
 	void SetAttackDir();
 	void TryParry();
 public:
-	//메멘토 복원 함수
-	CPlayerMemento SaveToMemento() const;
-	void RestoreFromMemento(const CPlayerMemento& memento);
+	std::unique_ptr<ISnapshot> SaveSnapshot() const override;
+	void LoadSnapshot(const ISnapshot& snap) override;
+	PlayerSnapshot SaveSnapshotValue() const;
+	void LoadSnapshotValue(const PlayerSnapshot& snap);
 private:
 	CInputManager* m_pInput;
 	//애니메이션
@@ -56,6 +82,6 @@ private:
 	float m_fAttackDirY;
 private:
 	//메멘토 복원용 멤버 변수
-	deque<CPlayerMemento> m_dHistory;
+	deque<PlayerSnapshot> m_dHistory;
 	bool m_bRewinding;
 };

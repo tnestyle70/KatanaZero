@@ -64,6 +64,34 @@ void CEnemyShotgun::Render(HDC hDC)
 	Rectangle(hDC, m_tRect.left, m_tRect.top, m_tRect.right, m_tRect.bottom);
 }
 
+std::unique_ptr<ISnapshot> CEnemyShotgun::SaveSnapshot() const
+{
+	auto snap = std::make_unique<EnemyShotgunSnapshot>();
+
+	snap->fX = m_tInfo.fX;
+	snap->fY = m_tInfo.fY;
+	snap->fCX = m_tInfo.fCX;
+	snap->fCY = m_tInfo.fCY;
+	snap->fSpeed = m_fSpeed;
+	snap->fAngle = m_fAngle;
+	snap->bDead = m_bDead;
+
+	return snap;
+}
+
+void CEnemyShotgun::LoadSnapshot(const ISnapshot& snapshot)
+{
+	auto& snap = static_cast<const EnemyShotgunSnapshot&>(snapshot);
+	
+	m_tInfo.fX = snap.fX;
+	m_tInfo.fY = snap.fY;
+	m_tInfo.fCX = snap.fCX;
+	m_tInfo.fCY = snap.fCY;
+	m_fSpeed = snap.fSpeed;
+	m_fAngle = snap.fAngle;
+	m_bDead = snap.bDead;
+}
+
 void CEnemyShotgun::OnHit(int iDamage)
 {
 	//맞았을 때의 처리
