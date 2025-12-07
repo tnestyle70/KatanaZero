@@ -23,7 +23,7 @@ void CDoctorClone::Initialize()
 	m_bStart = false;
 	m_fDistance = 100.f;
 	m_fOrbitSpawnAppearDuration = 1.f;
-	m_fOrbitVanishDuration = 0.3f;
+	m_fOrbitVanishDuration = 0.5f;
 	m_fOrbitOffset = 0.f;
 	m_fOrbitDistance = 100.f;
 	m_fOrbitSpeed = 200.f;
@@ -86,6 +86,7 @@ void CDoctorClone::UpdateOrbitAndAttack(float fDeltaTime)
 		UpdateOrbitMove(fDeltaTime);
 
 		m_fOrbitSpawnAppearDuration -= fDeltaTime;
+
 		if (m_fOrbitSpawnAppearDuration < 0.f)
 			m_eState = eCloneState::SHOT;
 		break;

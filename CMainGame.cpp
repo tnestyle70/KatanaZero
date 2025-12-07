@@ -11,6 +11,7 @@
 #include "CInputManager.h"
 #include "CCollisionMgr.h"
 #include "CParry.h"
+#include "CCamera.h"
 
 CMainGame::CMainGame()
 {
@@ -47,6 +48,11 @@ void CMainGame::Initialize(HWND hWnd)
 	
 	//InputManager 초기화
 	CInputManager::GetInst()->Initialize();
+
+	//Camera 초기화
+	CCamera::Get_Instance()->Initialize(WINCX, WINCY);
+	CCamera::Get_Instance()->SetWorldSize(WORLDX, WORLDY);
+	CCamera::Get_Instance()->SetAnchor(0.5f, 0.9f);
 }
 
 void CMainGame::Update()
@@ -61,39 +67,17 @@ void CMainGame::Update()
 
 	//Shift 보정한 시간값 사용
 	float fDeltaTime = CTimeManager::GetInst()->GetDeltaTime();
-	/*
-	for (size_t i = 0; i < OBJ_END; ++i)
-	{
-		for (auto iter = m_listObj[i].begin();
-			iter != m_listObj[i].end();)
-		{
-			int iResult = (*iter)->Update(fDeltaTime);
-			if (iResult == DEAD)
-			{
-				Safe_Delete<CObj*>(*iter);
-				iter = m_listObj[i].erase(iter);
-			}
-			else
-				iter++;
-		}
-	}
-	*/
+
 	CObjMgr::Get_Instance()->Update(fDeltaTime);
-	//CCollisionMgr::RectCollide(m_listObj[OBJ_BULLET], m_listObj[OBJ_PLAYER]);
+
+	//Camera
+	CCamera::Get_Instance()->Update();
 }
 
 void CMainGame::Late_Update()
 {
 	float fDeltaTime = CTimeManager::GetInst()->GetDeltaTime();
-	/*
-	for (size_t i = 0; i < OBJ_END; ++i)
-	{
-		for (auto pObj : m_listObj[i])
-		{
-			pObj->Late_Update(fDeltaTime);
-		}
-	}
-	*/
+
 	CObjMgr::Get_Instance()->Late_Update(fDeltaTime);
 }
 
@@ -102,21 +86,8 @@ void CMainGame::Render()
 	m_BackBuffer.Clear(RGB(0, 0, 0));
 
 	HDC HMemDC = m_BackBuffer.GetMemDC();
-	/*
-	for (size_t i = 0; i < OBJ_END; ++i)
-	{
-		for (auto pObj : m_listObj[i])
-		{
-			pObj->Render(HMemDC);
-		}
-	}
-	*/
-	CObjMgr::Get_Instance()->Render(HMemDC);
 
-	float fDeltaTime = CTimeManager::GetInst()->GetDeltaTime();
-	WCHAR cBuf[64];
-	swprintf_s(cBuf, L"플레이어 남은 체력 : %2.f", fDeltaTime);
-	TextOutW(HMemDC, 10, 40, cBuf, lstrlenW(cBuf));
+	CObjMgr::Get_Instance()->Render(HMemDC);
 
 	//BackBuffer를 실제 화면 DC에 복사
 	HDC hWndDC = GetDC(m_hWnd);
@@ -129,14 +100,4 @@ void CMainGame::Release()
 	m_BackBuffer.Release();
 	CTimeManager::DestoryInst();
 	CObjMgr::Get_Instance()->Release();
-	/*
-	for (size_t i = 0; i < OBJ_END; ++i)
-	{
-		for (auto& pObj : m_listObj[i])
-		{
-			Safe_Delete<CObj*>(pObj);
-		}
-		m_listObj[i].clear();
-	}
-	*/
 }

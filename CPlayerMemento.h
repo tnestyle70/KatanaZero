@@ -1,4 +1,5 @@
 #pragma once
+#include "Define.h"
 
 struct CPlayerMemento
 {
@@ -11,11 +12,10 @@ struct CPlayerMemento
 	//방향, 시선
 	float fDirX;
 	float fDirY;
-	bool bFacingRight;
 	//생사 
 	bool bDead;
 	//애니메이션 상태
-	int iAnimState;
+	ePlayerAnim eAnimState;
 	//땅, 벽에 붙어있는지
 	bool bOnGround;
 	bool bAttackWall;

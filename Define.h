@@ -1,6 +1,8 @@
 #pragma once
 #define WINCX 1280
 #define WINCY 720
+#define WORLDX 4000
+#define WORLDY 3000
 #define TILE_SIZE 32
 #define PURE = 0
 #define PI 3.141592
@@ -29,6 +31,11 @@ enum eObjID
 {
 	OBJ_PLAYER = 0, OBJ_ENEMY ,OBJ_ENEMY_SHOTGUN, OBJ_BULLET,
 	OBJ_PARRY, OBJ_PARRY_BULLET, OBJ_DOCTOR_BOSS, OBJ_DOCTOR_CLONE ,OBJ_BOSS_BULLET, OBJ_END
+};
+
+enum ePlayerAnim
+{
+	IDLE, MOVE, DASH, GROUND_ATTACK, AIR_ATTCK, END_ANIM
 };
 
 typedef struct Info

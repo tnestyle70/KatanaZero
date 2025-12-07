@@ -32,7 +32,9 @@ public:
     void UpdateRandomStrike(float fDeltaTime);
     void SetPattern(eClonePattern ePattern) { m_ePattern = ePattern; }
     void SetOrbitOffset(float fOffset) { m_fOrbitOffset = fOffset; }
+    void SetOrbitSpawnDuration(float fOrbitAppearDuration) { m_fOrbitSpawnAppearDuration = fOrbitAppearDuration; }
     void SetLineOffset(float fOffset) { m_fLineOffset = fOffset; }
+    void SetLineSpawnAppearDuration(float fLineAppearDuration) { m_fLineSpawnAppearDuration = fLineAppearDuration; }
 public:
     void CreateBullet();
     void CreateBulletNormal();

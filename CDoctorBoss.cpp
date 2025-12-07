@@ -17,7 +17,7 @@ void CDoctorBoss::Initialize()
 {
 	m_tInfo = { WINCX >> 1, 200.f, 100.f, 100.f };
 	m_eCurrentPattern = eDoctorPattern::FALLING_BULLET;
-	m_fPatternTime = 4.f;
+	m_fPatternTime = 3.f;
 	m_fAngle = 0.f;
 	m_fSpeed = 300.f;
 }
@@ -30,7 +30,7 @@ int CDoctorBoss::Update(float fDeltaTime)
 		if (m_fPatternTime <= 0.f)
 		{
 			UpdatePhase1(fDeltaTime);
-			m_fPatternTime = 2.f;
+			m_fPatternTime = 4.f;
 		}
 	}
 
@@ -93,7 +93,7 @@ void CDoctorBoss::UpdatePhase1(float fDeltaTime)
 	{
 	case eDoctorPattern::ARM_ATTACK:
 		Pattern_FallingBullet(fDeltaTime);
-		UpdateRandomSpawnClone();
+		UpdateOrbitClone();
 		break;
 	case eDoctorPattern::FALLING_BULLET:
 		Pattern_FallingBullet(fDeltaTime);
@@ -109,9 +109,11 @@ void CDoctorBoss::UpdateOrbitClone()
 	float fOrbitOffset = 0.f;
 	for (int i = 0; i < 5; ++i)
 	{
+		float fSpawnDuration = rand() % 10 + 2;
 		CObj* pBossClone = CAbstractFactory<CDoctorClone>::Create(WINCX >> 1, 250.f);
 		dynamic_cast<CDoctorClone*>(pBossClone)->SetPattern(eClonePattern::ORBIT_AND_STRIKE);
 		dynamic_cast<CDoctorClone*>(pBossClone)->SetOrbitOffset(fOrbitOffset);
+		dynamic_cast<CDoctorClone*>(pBossClone)->SetOrbitSpawnDuration(fSpawnDuration / 10);
 		fOrbitOffset += 72.f;
 		CObjMgr::Get_Instance()->Add_Object(OBJ_DOCTOR_CLONE, pBossClone);
 	}
@@ -122,9 +124,11 @@ void CDoctorBoss::UpdateLineClone()
 	float fLineOffset = 78.f;
 	for (int i = 0; i < 10; ++i)
 	{
+		float fSpawnDuration = rand() % 14 + 2;
 		CObj* pBossClone = CAbstractFactory<CDoctorClone>::Create(0.f + fLineOffset, 100.f);
 		dynamic_cast<CDoctorClone*>(pBossClone)->SetPattern(eClonePattern::LINE_STRIKE);
 		dynamic_cast<CDoctorClone*>(pBossClone)->SetLineOffset(fLineOffset);
+		dynamic_cast<CDoctorClone*>(pBossClone)->SetLineSpawnAppearDuration(fSpawnDuration / 10);
 		fLineOffset += 200.f;
 		CObjMgr::Get_Instance()->Add_Object(OBJ_DOCTOR_CLONE, pBossClone);
 	}

@@ -36,12 +36,39 @@ void CPlayer::Initialize()
 	m_fAttackDirY = 0.f;
 	//InputManager 연결
 	m_pInput = CInputManager::GetInst();
+	//메멘토
+	m_bRewinding = false;
 }
 
 int CPlayer::Update(float fDeltaTime)
 {
 	if (m_bDead)
 		return DEAD;
+
+	if (m_pInput->KeyPress(eKey::REWIND))
+	{
+		m_bRewinding = true;
+
+		if (m_dHistory.empty())
+		{
+			RestoreFromMemento(m_dHistory.back());
+			m_dHistory.pop_back();
+		}
+		//되감기 중엔 정상 물리/입력 스킵
+		return NOEVENT;
+	}
+	else
+	{
+		m_bRewinding = false;
+	}
+	//2.정상 상태일 때 Memento 저장
+	m_dHistory.push_back(SaveToMemento());
+	//메모리 폭주 방지
+	const size_t MAX_HISTORY = 300;
+	if (m_dHistory.size() > MAX_HISTORY)
+	{
+		m_dHistory.pop_front();
+	}
 
 	GetKeyInput();
 
@@ -130,9 +157,9 @@ void CPlayer::ResolveTileCollision()
 		m_tInfo.fX = m_tInfo.fCX * 0.5f;
 		m_bAttachWall = true;
 	}
-	if (m_tRect.right >= WINCX)
+	if (m_tRect.right >= WORLDX)
 	{
-		m_tInfo.fX = WINCX - m_tInfo.fCX * 0.5f;
+		m_tInfo.fX = WORLDX - m_tInfo.fCX * 0.5f;
 		m_bAttachWall = true;
 	}
 	//각도 보정
@@ -151,6 +178,7 @@ void CPlayer::Release()
 void CPlayer::Render(HDC hDC)
 {
 	Rectangle(hDC, m_tRect.left, m_tRect.top, m_tRect.right, m_tRect.bottom);
+
 }
 
 void CPlayer::GetKeyInput()
@@ -239,7 +267,7 @@ CPlayerMemento CPlayer::SaveToMemento() const
 	//생사
 	mem.bDead = m_bDead;
 	//애니메이션 상태
-	mem.iAnimState = m_eAnim;
+	mem.eAnimState = m_eAnim;
 	//땅, 벽
 	mem.bOnGround = m_bOnGround;
 	mem.bAttackWall = m_bAttachWall;
@@ -252,11 +280,37 @@ CPlayerMemento CPlayer::SaveToMemento() const
 	mem.fAttackCoolTime = m_fAttackCoolTime;
 	mem.fAttackRemainTime = m_fAttackDuration;
 	//시간 조절
-	//mem.fSlowGauge = 
+	//mem.fSlowGauge = m_fSlowGague;
 
-	return CPlayerMemento();
+	return mem;
 }
 
-void CPlayer::RestoreFromMemento(const CPlayerMemento& memento)
+void CPlayer::RestoreFromMemento(const CPlayerMemento& mem)
 {
+	//위치
+	m_tInfo.fX = mem.fX;
+	m_tInfo.fY = mem.fY;
+	//속도
+	m_fVelX = mem.fVelX;
+	m_fVelY = mem.fVelY;
+	//방향 시선
+	m_fDirX = mem.fDirX;
+	m_fDirY = mem.fDirY;
+	//생사
+	m_bDead = mem.bDead;
+	//애니메이션 상태
+	m_eAnim = mem.eAnimState;
+	//땅, 벽
+	m_bOnGround = mem.bOnGround;
+	m_bAttachWall = mem.bAttackWall;
+	//대쉬
+	m_bUseDash = mem.bUseDash;
+	m_fDashCoolTime = mem.fDashCoolTime;
+	m_fDashDuration = mem.fDashRemainTime;
+	//공격
+	m_bAttacking = mem.bAttacking;
+	m_fAttackCoolTime = mem.fAttackCoolTime;
+	m_fAttackDuration = mem.fAttackRemainTime;
+	
+	__super::Update_Rect();
 }

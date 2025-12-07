@@ -42,6 +42,7 @@ void CInputManager::Initialize()
 	m_iVKCode[eKey::ATTACK_LEFT] = VK_LBUTTON;
 	m_iVKCode[eKey::ATTACK_RIGHT] = VK_RBUTTON;
 	m_iVKCode[eKey::TIME_SLOW] = VK_SHIFT;
+	m_iVKCode[eKey::REWIND] = 'R';
 }
 
 void CInputManager::Update()

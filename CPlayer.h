@@ -2,11 +2,7 @@
 #include "Define.h"
 #include "CObj.h"
 #include "CPlayerMemento.h"
-
-enum ePlayerAnim
-{
-	IDLE, MOVE ,DASH, GROUND_ATTACK, AIR_ATTCK, END_ANIM
-};
+#include <deque>
 
 class CInputManager;
 
@@ -60,5 +56,6 @@ private:
 	float m_fAttackDirY;
 private:
 	//메멘토 복원용 멤버 변수
-	bool m_bRewindingLock;
+	deque<CPlayerMemento> m_dHistory;
+	bool m_bRewinding;
 };

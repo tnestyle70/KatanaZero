@@ -1,6 +1,7 @@
 #include "pch.h"
 #include "CObjMgr.h"
 #include "CCollisionMgr.h"
+#include "CCamera.h"
 
 //static 전역으로 m_pInstance를 선언해서 프로그램이 종료될 때까지 사용을 한다.
 CObjMgr* CObjMgr::m_pInstance = nullptr;
@@ -72,6 +73,12 @@ void CObjMgr::Late_Update(float fDelatTime)
 
 void CObjMgr::Render(HDC hDC)
 {
+	float fCamX = CCamera::Get_Instance()->GetCamX();
+	float fCamY = CCamera::Get_Instance()->GetCamY();
+	//기존 원점 저장
+	POINT oldOrg{};
+	SetViewportOrgEx(hDC, -(int)fCamX, -(int)fCamY, &oldOrg);
+
 	for (size_t i = 0; i < OBJ_END; ++i)
 	{
 		for (auto& pObj : m_listObj[i])
@@ -79,6 +86,8 @@ void CObjMgr::Render(HDC hDC)
 			pObj->Render(hDC);
 		}
 	}
+
+	SetViewportOrgEx(hDC, oldOrg.x, oldOrg.y, nullptr);
 }
 
 void CObjMgr::Release()
