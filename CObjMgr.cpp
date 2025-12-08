@@ -71,6 +71,17 @@ void CObjMgr::Late_Update(float fDelatTime)
 	//CCollisionMgr::RectCollide(m_listObj[OBJ_PARRY_BULLET], m_listObj[OBJ_DOCTOR_CLONE]);
 }
 
+void CObjMgr::Update_Rect()
+{
+	for (size_t i = 0; i < OBJ_END; ++i)
+	{
+		for (auto& pObj : m_listObj[i])
+		{
+			pObj->Update_Rect();
+		}
+	}
+}
+
 void CObjMgr::Render(HDC hDC)
 {
 	float fCamX = CCamera::Get_Instance()->GetCamX();

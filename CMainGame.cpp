@@ -12,6 +12,7 @@
 #include "CCollisionMgr.h"
 #include "CParry.h"
 #include "CCamera.h"
+#include "CRewindMgr.h"
 
 CMainGame::CMainGame()
 {
@@ -32,6 +33,7 @@ void CMainGame::Initialize(HWND hWnd)
 	}
 	//TimeManager 초기화 
 	CTimeManager::GetInst()->Initialize();
+
 	//플레이어 생성
 	CObj* pPlayer = CAbstractFactory<CPlayer>::Create();
 	CObjMgr::Get_Instance()->Add_Object(OBJ_PLAYER, pPlayer);
@@ -61,26 +63,47 @@ void CMainGame::Update()
 	CTimeManager::GetInst()->Update();
 	CInputManager::GetInst()->Update();
 
-
 	//Shift키 입력에 따른 TimeManager의 TimeScale 조정
-	if (CInputManager::GetInst()->KeyPress(eKey::TIME_SLOW))
+	if (CInputManager::GetInst()->KeyDown(eKey::TIME_SLOW))
 		CTimeManager::GetInst()->SetSlowMotion(0.15f);
-
-	//되감기 Memeto 호출
-	//if (CInputManager::GetInst()->KeyPress(eKey::REWIND))
-	//	CTimeManager::GetInst()->SetSlowMotion(0.0f);
 
 	//Shift 보정한 시간값 사용
 	float fDeltaTime = CTimeManager::GetInst()->GetDeltaTime();
 
-	CObjMgr::Get_Instance()->Update(fDeltaTime);
+	auto* pObjList = CObjMgr::Get_Instance();
+	auto* pRewindMgr = CRewindMgr::GetInstance();
 
+	//되감기 Memeto 호출
+	if (CInputManager::GetInst()->KeyPress(eKey::REWIND))
+	{
+		if (pRewindMgr->GetRewindFrames().empty())
+		{
+			pRewindMgr->SetRewinding(false);
+			return;
+		}
+		pRewindMgr->SetRewinding(true);
+		pRewindMgr->RewindFrame(*pObjList);
+		//Rect만 업데이트해서 Rewinding되는 상태 반영
+		CObjMgr::Get_Instance()->Update_Rect();
+	}
+	else
+	{
+		pRewindMgr->SetRewinding(false);
+		pRewindMgr->StoreFrame(*pObjList);
+		CObjMgr::Get_Instance()->Update(fDeltaTime);
+	}
 	//Camera
 	CCamera::Get_Instance()->Update();
 }
 
 void CMainGame::Late_Update()
 {
+	auto* pRewindMgr = CRewindMgr::GetInstance();
+	if (pRewindMgr->IsRewinding())
+	{
+		return;
+	}
+
 	float fDeltaTime = CTimeManager::GetInst()->GetDeltaTime();
 
 	CObjMgr::Get_Instance()->Late_Update(fDeltaTime);

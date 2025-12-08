@@ -14,7 +14,7 @@ public:
 	virtual void Render(HDC hDC)PURE;
 	virtual void Release()PURE;
 public:
-	void Update_Rect();
+	virtual void Update_Rect();
 public:
 	void SetTarget(CObj* pTarget) { m_pTarget = pTarget; }
 	CObj* GetTarget() { return m_pTarget; }

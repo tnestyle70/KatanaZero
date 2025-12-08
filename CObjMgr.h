@@ -17,6 +17,7 @@ public:
 	list<CObj*>* Get_Object_List(eObjID eID);
 	void Update(float fDelatTime);
 	void Late_Update(float fDelatTime);
+	void Update_Rect();
 	void Render(HDC hDC);
 	void Release();
 public:

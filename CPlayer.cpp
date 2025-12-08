@@ -44,7 +44,7 @@ int CPlayer::Update(float fDeltaTime)
 {
 	if (m_bDead)
 		return DEAD;
-
+	/*
 	if (m_pInput->KeyPress(eKey::REWIND))
 	{
 		m_bRewinding = true;
@@ -61,6 +61,7 @@ int CPlayer::Update(float fDeltaTime)
 	{
 		m_bRewinding = false;
 	}
+	
 	//2.정상 상태일 때 Memento 저장
 	m_dHistory.push_back(SaveSnapshotValue());
 	//메모리 폭주 방지
@@ -69,7 +70,7 @@ int CPlayer::Update(float fDeltaTime)
 	{
 		m_dHistory.pop_front();
 	}
-
+	*/
 	GetKeyInput();
 
 	//대쉬 쿨타임 감소
@@ -223,11 +224,6 @@ void CPlayer::GetKeyInput()
 	{
 		SetAttackDir();
 		m_bAttacking = true;
-	}
-	//타임 슬로우
-	if (m_pInput->KeyDown(eKey::TIME_SLOW))
-	{
-		
 	}
 }
 

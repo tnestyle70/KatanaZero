@@ -149,6 +149,7 @@
     <ClInclude Include="CParryBullet.h" />
     <ClInclude Include="CPlayer.h" />
     <ClInclude Include="CPlayerMemento.h" />
+    <ClInclude Include="CRewindMgr.h" />
     <ClInclude Include="CTimeManager.h" />
     <ClInclude Include="Define.h" />
     <ClInclude Include="framework.h" />
@@ -180,6 +181,7 @@
     <ClCompile Include="CParry.cpp" />
     <ClCompile Include="CParryBullet.cpp" />
     <ClCompile Include="CPlayer.cpp" />
+    <ClCompile Include="CRewindMgr.cpp" />
     <ClCompile Include="CTimeManager.cpp" />
     <ClCompile Include="KatanaZero.cpp" />
   </ItemGroup>
