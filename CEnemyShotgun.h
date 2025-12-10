@@ -26,7 +26,7 @@ public:
 	std::unique_ptr<ISnapshot> SaveSnapshot() const override;
 	void LoadSnapshot(const ISnapshot& snapshot) override;
 public:
-	void OnHit(int iDamage)override;
+	void OnHit()override;
 public:
 	void CreateBullet();
 	void ResolveCollision();

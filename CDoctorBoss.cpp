@@ -3,6 +3,7 @@
 #include "CAbstractFactory.h"
 #include "CDoctorBoss.h"
 #include "CDoctorClone.h"
+#include "CDoctorEyeClone.h"
 #include "CBullet.h"
 
 CDoctorBoss::CDoctorBoss()
@@ -16,10 +17,12 @@ CDoctorBoss::~CDoctorBoss()
 void CDoctorBoss::Initialize()
 {
 	m_tInfo = { WINCX >> 1, 200.f, 100.f, 100.f };
-	m_eCurrentPattern = eDoctorPattern::FALLING_BULLET;
+	m_eCurrentPattern = eDoctorPattern::EYE;
+	m_eEyePattern = eEyePattern::REVERSE_DIVIDE;
 	m_fPatternTime = 3.f;
 	m_fAngle = 0.f;
 	m_fSpeed = 300.f;
+	m_iHP = 100;
 }
 
 int CDoctorBoss::Update(float fDeltaTime)
@@ -57,6 +60,12 @@ void CDoctorBoss::Release()
 {
 }
 
+void CDoctorBoss::OnHit()
+{
+	//Hit시 처리
+	m_iHP -= 1;
+}
+
 void CDoctorBoss::ResolveCollision()
 {
 	float fRandAngle; 
@@ -92,12 +101,19 @@ void CDoctorBoss::UpdatePhase1(float fDeltaTime)
 	switch (m_eCurrentPattern)
 	{
 	case eDoctorPattern::ARM_ATTACK:
-		Pattern_FallingBullet(fDeltaTime);
+		//Pattern_FallingBullet(fDeltaTime);
 		UpdateOrbitClone();
 		break;
 	case eDoctorPattern::FALLING_BULLET:
-		Pattern_FallingBullet(fDeltaTime);
+		//Pattern_FallingBullet(fDeltaTime);
 		UpdateLineClone();
+		break;
+	case eDoctorPattern::EYE:
+		Pattern_EyeClone(fDeltaTime);
+		//m_eCurrentPattern = eDoctorPattern::WAITING;
+		break;
+	case eDoctorPattern::WAITING:
+		//눈 패턴 동안은 잠시 대기
 		break;
 	default:
 		break;
@@ -168,6 +184,86 @@ void CDoctorBoss::SpawnFallingBullet()
 
 	CObj* pBullet = CAbstractFactory<CBullet>::Create(m_tInfo.fX, m_tInfo.fY);
 	pBullet->SetTarget(CObjMgr::Get_Instance()->Get_Object(OBJ_PLAYER));
-	dynamic_cast<CBullet*>(pBullet)->SetOwner(this);	
+	dynamic_cast<CBullet*>(pBullet)->SetOwner(this, eBulletOwner::ENEMY);
 	CObjMgr::Get_Instance()->Add_Object(OBJ_BULLET, pBullet);
+}
+
+void CDoctorBoss::Pattern_EyeClone(float fDeltaTime)
+{
+	switch (m_eEyePattern)
+	{
+	case eEyePattern::NORMAL:
+		SpawnEyeClone(1);
+		Eye_Noraml(fDeltaTime);
+		break;
+	case eEyePattern::DIVIDE:
+		SpawnEyeClone(2);
+		Eye_Divide(fDeltaTime);
+		break;
+	case eEyePattern::REVERSE_DIVIDE:
+		SpawnEyeClone(3);
+		Eye_ReverseDivide(fDeltaTime);
+		break;
+	case eEyePattern::UPSIDE_DOWN:
+		SpawnEyeClone(5);
+		Eye_UpsideDown(fDeltaTime);
+		break;
+	default:
+		break;
+	}
+}
+
+void CDoctorBoss::SpawnEyeClone(int iCount)
+{
+	for (int i = 0; i < iCount; ++i)
+	{
+		float fRandX = rand() % WINCX;
+		float fRandY = rand() % WINCY;
+		CObj* pEyeClone = CAbstractFactory<CDoctorEyeClone>::Create(fRandX, fRandY);
+		CObjMgr::Get_Instance()->Add_Object(OBJ_EYE_CLONE, pEyeClone);
+	}
+}
+
+void CDoctorBoss::Eye_Noraml(float fDeltaTime)
+{
+	if (IsEyeCloneDead())
+	{
+		m_eEyePattern = eEyePattern::DIVIDE;
+	}
+	return;
+}
+
+void CDoctorBoss::Eye_Divide(float fDeltaTime)
+{
+	if (IsEyeCloneDead())
+	{
+		m_eEyePattern = eEyePattern::REVERSE_DIVIDE;
+	}
+	return;
+}
+
+void CDoctorBoss::Eye_ReverseDivide(float fDeltaTime)
+{
+	if (IsEyeCloneDead())
+	{
+		m_eEyePattern = eEyePattern::UPSIDE_DOWN;
+	}
+	return;
+}
+
+void CDoctorBoss::Eye_UpsideDown(float fDeltaTime)
+{
+}
+
+bool CDoctorBoss::IsEyeCloneDead()
+{
+	auto listEye = CObjMgr::Get_Instance()->Get_Object_List(OBJ_EYE_CLONE);
+	return listEye->empty();
+}
+
+
+bool CDoctorBoss::IsEyeSplitPhase() 
+{
+	return (m_eCurrentPattern == eDoctorPattern::EYE)
+		&& (m_eEyePattern != eEyePattern::NORMAL);
 }

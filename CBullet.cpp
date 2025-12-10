@@ -1,7 +1,7 @@
 #include "pch.h"
 #include "CBullet.h"
 
-CBullet::CBullet()
+CBullet::CBullet() : m_pOwner(nullptr)
 {
 }
 
@@ -15,12 +15,14 @@ void CBullet::Initialize()
 	m_tInfo.fCY = 10.f;
 	m_fSpeed = 1500.f; 
 	m_bStart = false;
+	m_eOwner = eBulletOwner::NEUTRAL;
 }
 
 int CBullet::Update(float fDeltaTime)
 {
 	if (m_bDead)
 		return DEAD;
+	/*
 	if (!m_bStart)
 	{
 		float fDX = m_pTarget->GetInfo()->fX - m_tInfo.fX;
@@ -39,8 +41,12 @@ int CBullet::Update(float fDeltaTime)
 		m_bStart = true;
 	}
 	//구한 세타값을 기준으로 이동
-	m_tInfo.fX += m_fSpeed * fDeltaTime * cosf((m_fInitAngle + m_fAngle)* (PI / 180));
+	m_tInfo.fX += m_fSpeed * fDeltaTime * cosf((m_fInitAngle + m_fAngle) * (PI / 180));
 	m_tInfo.fY += m_fSpeed * fDeltaTime * sinf((m_fInitAngle + m_fAngle) * (PI / 180));
+	*/
+
+	m_tInfo.fX += m_fSpeed * m_fDirX * fDeltaTime;
+	m_tInfo.fY += m_fSpeed * m_fDirY * fDeltaTime;
 
 	__super::Update_Rect();
 
@@ -60,6 +66,18 @@ void CBullet::Render(HDC hDC)
 	Rectangle(hDC, m_tRect.left, m_tRect.top, m_tRect.right, m_tRect.bottom);
 }
 
+void CBullet::OnParried()
+{
+	//패링 호출되면 해당 Bullet에 대한 target을 끊고 방향, 소유권 플레이어로 설정
+	if (m_eOwner == eBulletOwner::PLAYER) return;
+	m_eOwner = eBulletOwner::PLAYER;
+	m_fDirX *= -1;
+	m_fDirY *= -1;
+	//m_pTarget = nullptr;
+	//m_fAngle = 180.f + m_fAngle;
+	//m_bStart = false;
+}
+
 std::unique_ptr<ISnapshot> CBullet::SaveSnapshot() const
 {
 	auto snap = std::make_unique<BulletSnapshot>();
@@ -69,6 +87,7 @@ std::unique_ptr<ISnapshot> CBullet::SaveSnapshot() const
 	snap->fAngle = m_fAngle;
 	snap->fSpeed = m_fSpeed;
 	snap->bDead = m_bDead;
+	snap->eOwner = m_eOwner;
 
 	return snap;
 }
@@ -81,8 +100,5 @@ void CBullet::LoadSnapshot(const ISnapshot& snapshot)
 	m_tInfo.fY = snap.fY;
 	m_fAngle = snap.fAngle;
 	m_bDead = snap.bDead;
-}
-
-void CBullet::OnParried()
-{
+	m_eOwner = snap.eOwner;
 }

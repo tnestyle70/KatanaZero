@@ -68,7 +68,7 @@ void CObjMgr::Late_Update(float fDelatTime)
 		}
 	}
 	CCollisionMgr::ParryCollide(m_listObj[OBJ_PARRY], m_listObj[OBJ_BULLET]);
-	//CCollisionMgr::RectCollide(m_listObj[OBJ_PARRY_BULLET], m_listObj[OBJ_DOCTOR_CLONE]);
+	CCollisionMgr::AttackCollide(m_listObj[OBJ_ATTACK], m_listObj[OBJ_EYE_CLONE]);
 }
 
 void CObjMgr::Update_Rect()
@@ -84,12 +84,13 @@ void CObjMgr::Update_Rect()
 
 void CObjMgr::Render(HDC hDC)
 {
+	/*
 	float fCamX = CCamera::Get_Instance()->GetCamX();
 	float fCamY = CCamera::Get_Instance()->GetCamY();
 	//기존 원점 저장
 	POINT oldOrg{};
 	SetViewportOrgEx(hDC, -(int)fCamX, -(int)fCamY, &oldOrg);
-
+	*/
 	for (size_t i = 0; i < OBJ_END; ++i)
 	{
 		for (auto& pObj : m_listObj[i])
@@ -97,8 +98,7 @@ void CObjMgr::Render(HDC hDC)
 			pObj->Render(hDC);
 		}
 	}
-
-	SetViewportOrgEx(hDC, oldOrg.x, oldOrg.y, nullptr);
+	//SetViewportOrgEx(hDC, oldOrg.x, oldOrg.y, nullptr);
 }
 
 void CObjMgr::Release()

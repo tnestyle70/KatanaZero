@@ -55,6 +55,11 @@ void CMainGame::Initialize(HWND hWnd)
 	CCamera::Get_Instance()->Initialize(WINCX, WINCY);
 	CCamera::Get_Instance()->SetWorldSize(WORLDX, WORLDY);
 	CCamera::Get_Instance()->SetAnchor(0.5f, 0.9f);
+
+	//CScreenSplit 초기화
+	m_ScreenSplit.Initialize(WINCX, WINCY);
+	//카메라 ScreenSplit 연결
+	CCamera::Get_Instance()->SetScreenSpilt(&m_ScreenSplit);
 }
 
 void CMainGame::Update()
@@ -64,7 +69,7 @@ void CMainGame::Update()
 	CInputManager::GetInst()->Update();
 
 	//Shift키 입력에 따른 TimeManager의 TimeScale 조정
-	if (CInputManager::GetInst()->KeyDown(eKey::TIME_SLOW))
+	if (CInputManager::GetInst()->KeyPress(eKey::TIME_SLOW))
 		CTimeManager::GetInst()->SetSlowMotion(0.15f);
 
 	//Shift 보정한 시간값 사용
@@ -88,10 +93,18 @@ void CMainGame::Update()
 	}
 	else
 	{
+		CObjMgr::Get_Instance()->Update(fDeltaTime);
 		pRewindMgr->SetRewinding(false);
 		pRewindMgr->StoreFrame(*pObjList);
-		CObjMgr::Get_Instance()->Update(fDeltaTime);
 	}
+	
+	//스플릿 모드 On/Off 체크
+	auto* pBossObj = CObjMgr::Get_Instance()->Get_Object(OBJ_DOCTOR_BOSS);
+	if (dynamic_cast<CDoctorBoss*>(pBossObj)->IsEyeSplitPhase())
+		CCamera::Get_Instance()->SetSplitMode(true);
+	else
+		CCamera::Get_Instance()->SetSplitMode(false);
+		
 	//Camera
 	CCamera::Get_Instance()->Update();
 }
@@ -99,12 +112,14 @@ void CMainGame::Update()
 void CMainGame::Late_Update()
 {
 	auto* pRewindMgr = CRewindMgr::GetInstance();
+
 	if (pRewindMgr->IsRewinding())
 	{
 		return;
 	}
-
 	float fDeltaTime = CTimeManager::GetInst()->GetDeltaTime();
+
+	CObjMgr::Get_Instance()->Update_Rect();
 
 	CObjMgr::Get_Instance()->Late_Update(fDeltaTime);
 }
@@ -115,8 +130,34 @@ void CMainGame::Render()
 
 	HDC HMemDC = m_BackBuffer.GetMemDC();
 
-	CObjMgr::Get_Instance()->Render(HMemDC);
+	//보스 상태 
+	auto* pBossObj = CObjMgr::Get_Instance()->Get_Object(OBJ_DOCTOR_BOSS);
+	auto* pBoss = dynamic_cast<CDoctorBoss*>(pBossObj);
+	
+	if (pBoss && pBoss->IsEyeSplitPhase())
+	{
+		for (int i = 0; i < 4; ++i)
+		{
+			const RECT& rc = m_ScreenSplit.GetQuad(i);
+			HRGN rgn = CreateRectRgn(rc.left, rc.top, rc.right, rc.bottom);
+			SelectClipRgn(HMemDC, rgn);
 
+			//카메라에 Quadrant 전달
+			CCamera::Get_Instance()->SetQuadrant(i);
+
+			//현재 사분면 인덱스를 전역/렌더 컨텍스트로 전달
+			CObjMgr::Get_Instance()->Render(HMemDC);
+
+			SelectClipRgn(HMemDC, nullptr);
+			DeleteObject(rgn);
+		}
+		CCamera::Get_Instance()->SetQuadrant(-1);
+	}
+	else
+	{
+		CCamera::Get_Instance()->SetQuadrant(-1);
+		CObjMgr::Get_Instance()->Render(HMemDC);
+	}
 	//BackBuffer를 실제 화면 DC에 복사
 	HDC hWndDC = GetDC(m_hWnd);
 	m_BackBuffer.Present(hWndDC);

@@ -2,6 +2,7 @@
 #include "Define.h"
 #include "CObj.h"
 #include "CBackBuffer.h"
+#include "CScreenSplit.h"
 
 class CMainGame
 {
@@ -18,4 +19,5 @@ private:
 	HWND m_hWnd;
 	//list<CObj*> m_listObj[OBJ_END];
 	CBackBuffer m_BackBuffer;
+	CScreenSplit m_ScreenSplit;
 };

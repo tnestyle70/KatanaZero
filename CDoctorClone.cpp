@@ -19,6 +19,7 @@ void CDoctorClone::Initialize()
 	m_tInfo.fCY = 50.f;
 	m_eState = eCloneState::APPEAR;
 	m_ePattern = eClonePattern::RANDOM_STRIKE;
+	m_iHP = 1;
 	//원형 회전 패턴
 	m_bStart = false;
 	m_fDistance = 100.f;
@@ -43,6 +44,12 @@ int CDoctorClone::Update(float fDeltaTime)
 	if (m_bDead)
 		return DEAD;
 
+	if (m_iHP <= 0)
+	{
+		m_bDead = true;
+		return DEAD;
+	}
+
 	UpdatePhase(fDeltaTime);
 
 	__super::Update_Rect();
@@ -58,6 +65,11 @@ void CDoctorClone::Late_Update(float fDeltaTime)
 void CDoctorClone::Render(HDC hDC)
 {
 	Rectangle(hDC, m_tRect.left, m_tRect.top, m_tRect.right, m_tRect.bottom);
+}
+
+void CDoctorClone::OnHit()
+{
+	m_iHP -= 1;
 }
 
 void CDoctorClone::UpdatePhase(float fDeltaTime)
@@ -95,7 +107,7 @@ void CDoctorClone::UpdateOrbitAndAttack(float fDeltaTime)
 	case eCloneState::SHOT:
 		if (!m_bShot)
 		{
-			CreateBullet();
+			CreateBulletTarget();
 			m_bShot = true;
 		}
 		m_fOrbitVanishDuration -= fDeltaTime;
@@ -171,7 +183,7 @@ void CDoctorClone::UpdateRandomStrike(float fDeltaTime)
 	case eCloneState::SHOT:
 		if (!m_bShot)
 		{
-			CreateBullet();
+			CreateBulletTarget();
 			m_bShot = true;
 		}
 		m_fRandomShotDuration -= fDeltaTime;
@@ -190,23 +202,37 @@ void CDoctorClone::Release()
 {
 }
 
-void CDoctorClone::OnHit(int iDamage)
+void CDoctorClone::CreateBulletTarget()
 {
-}
+	CObj* pPlayer = CObjMgr::Get_Instance()->Get_Object(OBJ_PLAYER);
+	//플레이어와 몬스터 사이의 거리를 구하고 빗변으로 나눠서 정규화를 한 Dir을 구한다.
+	float fDX = pPlayer->GetInfo()->fX - m_tInfo.fX;
+	float fDY = pPlayer->GetInfo()->fY - m_tInfo.fY;
+	float fLen = sqrtf(fDX * fDX + fDY * fDY);
+	if (fLen < 0.0001f) return;
+	//방향 정규화 - 벡터의 방향을 1로 만들기
+	float fDirX = fDX / fLen;
+	float fDirY = fDY / fLen;
 
-void CDoctorClone::CreateBullet()
-{
 	CObj* pBullet = CAbstractFactory<CBullet>::Create(m_tInfo.fX, m_tInfo.fY);
+	pBullet->SetDir(fDirX, fDirY);
+	dynamic_cast<CBullet*>(pBullet)->SetOwner(this, eBulletOwner::ENEMY);
 	CObjMgr::Get_Instance()->Add_Object(OBJ_BULLET, pBullet);
-	pBullet->SetTarget(CObjMgr::Get_Instance()->Get_Object(OBJ_PLAYER));
-	dynamic_cast<CBullet*>(pBullet)->SetOwner(this);
+	
+	return;
 }
 
 void CDoctorClone::CreateBulletNormal()
 {
-	CObj* pBullet = CAbstractFactory<CBulletNormal>::Create(m_tInfo.fX, m_tInfo.fY);
+	float fDirX = 0.f;
+	float fDirY = 1.f;
+
+	CObj* pBullet = CAbstractFactory<CBullet>::Create(m_tInfo.fX, m_tInfo.fY);
+	pBullet->SetDir(fDirX, fDirY);
+	dynamic_cast<CBullet*>(pBullet)->SetOwner(this, eBulletOwner::ENEMY);
 	CObjMgr::Get_Instance()->Add_Object(OBJ_BULLET, pBullet);
-	dynamic_cast<CBulletNormal*>(pBullet)->SetOwner(this);
+
+	return;
 }
 
 

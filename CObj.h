@@ -24,6 +24,7 @@ public:
 	const RECT* GetRect() const { return &m_tRect; }
 	void SetAngle(float fAngle) { m_fAngle = fAngle; }
 	void SetDead() { m_bDead = true; }
+	bool IsDead() {return m_bDead;}
 	void SetPos(float fX, float fY) { m_tInfo.fX = fX, m_tInfo.fY = fY; }
 	void SetDir(float fDirX, float fDirY) { m_fDirX = fDirX, m_fDirY = fDirY; }
 protected:

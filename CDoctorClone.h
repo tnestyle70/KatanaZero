@@ -24,7 +24,7 @@ public:
     void Render(HDC hDC) override;
     void Release() override;
 public:
-    void OnHit(int iDamage)override;
+    void OnHit()override;
     void UpdatePhase(float fDeltaTime);
     void UpdateOrbitAndAttack(float fDeltaTime);
     void UpdateOrbitMove(float fDeltaTime);
@@ -36,7 +36,7 @@ public:
     void SetLineOffset(float fOffset) { m_fLineOffset = fOffset; }
     void SetLineSpawnAppearDuration(float fLineAppearDuration) { m_fLineSpawnAppearDuration = fLineAppearDuration; }
 public:
-    void CreateBullet();
+    void CreateBulletTarget();
     void CreateBulletNormal();
 private:
     eCloneState m_eState;

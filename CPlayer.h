@@ -45,9 +45,11 @@ public:
 public:
 	void UpdateAttack(float fDeltaTime);
 	void UpdateDash(float fDeltaTime);
+	void UpdateAttachWall();
 	void ResolveTileCollision();
 	void GetKeyInput();
 	void SetAttackDir();
+	void TryAttack();
 	void TryParry();
 public:
 	std::unique_ptr<ISnapshot> SaveSnapshot() const override;

@@ -19,7 +19,7 @@ public:
 	virtual void Render(HDC hDC)PURE;
 	virtual void Release()PURE;
 public:
-	virtual void OnHit(int iDamage)PURE;
+	virtual void OnHit()PURE;
 protected:
 	int m_iHP;
 private:

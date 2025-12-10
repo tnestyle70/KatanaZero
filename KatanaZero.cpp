@@ -69,8 +69,8 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
             float fDeltaTime = (float)msTime / 1000.f;
             CTimeManager::GetInst()->SetDeltaTime(fDeltaTime);
             game.Update();
-            game.Render();
             game.Late_Update();
+            game.Render();
         }
     }
     game.Release();

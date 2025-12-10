@@ -10,7 +10,7 @@ CRewindMgr::CRewindMgr() : m_bRewinding(false)
 void CRewindMgr::StoreFrame(CObjMgr& mgr)
 {
 	Frame frame;
-	const size_t MAX_FRAMES = 5000;
+	const size_t MAX_FRAMES = 8000;
 	for (int i = 0; i < OBJ_END; ++i)
 	{
 		auto* pList = mgr.Get_Instance()->Get_Object_List((eObjID)i);

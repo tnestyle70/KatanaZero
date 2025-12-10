@@ -1,20 +1,19 @@
 #include "pch.h"
-#include "CParry.h"
-#include "CBullet.h"
+#include "CAttack.h"
 #include "CObjMgr.h"
+#include "CEnemy.h"
 #include "CAbstractFactory.h"
-#include "CParryBullet.h"
 
-CParry::CParry()
-	: m_bActive(false), m_pBullet(nullptr), m_pOwner(nullptr)
+CAttack::CAttack()
+	: m_bActive(false), m_pOwner(nullptr)
 {
 }
 
-CParry::~CParry()
+CAttack::~CAttack()
 {
 }
 
-void CParry::Initialize()
+void CAttack::Initialize()
 {
 	//패링 판정 넓이
 	m_tInfo.fCX = 100.f;
@@ -22,19 +21,19 @@ void CParry::Initialize()
 	m_bDead = false;
 	m_bActive = true;
 	m_fActiveTime = 0.2f;
-	m_bSuccessParry = false;
+	m_bSuccessAttack = false;
 }
 
-int CParry::Update(float fDeltaTime)
+int CAttack::Update(float fDeltaTime)
 {
 	if (m_bDead)
 		return DEAD;
-	
-	if (m_bSuccessParry)
+
+	if (m_bSuccessAttack)
 	{
-		m_bSuccessParry = false;
+		m_bSuccessAttack = false;
 	}
-	
+
 	//플레이어 추적
 	FollowPlayer(fDeltaTime);
 
@@ -55,27 +54,27 @@ int CParry::Update(float fDeltaTime)
 	return NOEVENT;
 }
 
-void CParry::Late_Update(float fDeltaTime)
+void CAttack::Late_Update(float fDeltaTime)
 {
 }
 
-void CParry::Render(HDC hDC)
+void CAttack::Render(HDC hDC)
 {
 	Rectangle(hDC, m_tRect.left, m_tRect.top, m_tRect.right, m_tRect.bottom);
 }
 
-void CParry::Release()
+void CAttack::Release()
 {
 }
 
-void CParry::OnParry(CObj* pBullet)
+void CAttack::OnAttack(CObj* pEnemy)
 {
 	//패링이 되었다는 사실만 Bullet에게 넘겨주고 종료
-	if (!pBullet) return; 
-	dynamic_cast<CBullet*>(pBullet)->OnParried();
+	if (!pEnemy) return;
+	dynamic_cast<CEnemy*>(pEnemy)->OnHit();
 }
 
-void CParry::FollowPlayer(float fDeltaTime)
+void CAttack::FollowPlayer(float fDeltaTime)
 {
 	m_pOwner = CObjMgr::Get_Instance()->Get_Object(OBJ_PLAYER);
 

@@ -1,11 +1,11 @@
 #pragma once
 #include "CObj.h"
 
-class CParry : public CObj
+class CAttack : public CObj
 {
 public:
-	CParry();
-	~CParry();
+	CAttack();
+	~CAttack();
 public:
 	void Initialize() override;
 	int Update(float fDeltaTime) override;
@@ -13,14 +13,13 @@ public:
 	void Render(HDC hDC) override;
 	void Release() override;
 public:
-	void OnParry(CObj* pBullet);
-	void SetOwner(CObj* pOwner) { m_pOwner = pOwner; }
+	void OnAttack(CObj* pEnemy);
 private:
 	void FollowPlayer(float fDeltaTime);
 private:
 	CObj* m_pOwner;
-	CObj* m_pBullet;
+	CObj* m_pEnemy;
 	float m_fActiveTime;
-	bool m_bSuccessParry;
+	bool m_bSuccessAttack;
 	bool m_bActive;
 };

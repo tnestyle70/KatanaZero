@@ -1,12 +1,12 @@
 #pragma once
-#include "CObj.h"
+#include "CEnemy.h"
 
 enum class eBossState
 {
 	INTRO, PHASE1, STUNNED 
 };
 
-class CEnemyBoss : public CObj
+class CEnemyBoss : public CEnemy
 {
 public:
 	CEnemyBoss() {};
@@ -18,12 +18,8 @@ public:
 	virtual void Render(HDC hDC)PURE;
 	virtual void Release()PURE;
 public:
-	void SetBulletList(list<CObj*>* pBulletList) { m_pBulletList = pBulletList; }
-protected:
-	int m_iHP;
-	bool m_bDead;
+	virtual void OnHit()PURE;
 private:
 	eBossState m_eState;
 	float m_fStateTime;
-	list<CObj*>* m_pBulletList;
 };

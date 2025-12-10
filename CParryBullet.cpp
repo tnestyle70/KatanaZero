@@ -41,3 +41,26 @@ void CParryBullet::Render(HDC hDC)
 void CParryBullet::Release()
 {
 }
+
+std::unique_ptr<ISnapshot> CParryBullet::SaveSnapshot() const
+{
+	auto snap = std::make_unique<ParryBulletSnapshot>();
+
+	snap->fX = m_tInfo.fX;
+	snap->fY = m_tInfo.fY;
+	snap->fAngle = m_fAngle;
+	snap->fSpeed = m_fSpeed;
+	snap->bDead = m_bDead;
+
+	return snap;
+}
+
+void CParryBullet::LoadSnapshot(const ISnapshot& snapshot)
+{
+	auto& snap = static_cast<const ParryBulletSnapshot&>(snapshot);
+
+	m_tInfo.fX = snap.fX;
+	m_tInfo.fY = snap.fY;
+	m_fAngle = snap.fAngle;
+	m_bDead = snap.bDead;
+}

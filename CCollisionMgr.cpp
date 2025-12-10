@@ -1,7 +1,9 @@
 #include "pch.h"
 #include "CCollisionMgr.h"
+#include "CRewindMgr.h"
 #include "CParry.h"
 #include "CBullet.h"
+#include "CAttack.h"
 
 void CCollisionMgr::RectCollide(list<CObj*> EnemyBullet, list<CObj*> Player)
 {
@@ -26,16 +28,43 @@ void CCollisionMgr::ParryCollide(list<CObj*>& listParry, list<CObj*>& listBullet
 {
 	if (listParry.empty()) return;
 	if (listBullet.empty()) return;
+	
+	//Rewinding시 패링 금지
+	if (CRewindMgr::GetInstance()->IsRewinding()) return;
 
 	RECT rc = {};
 	for (auto& pParry : listParry)
 	{
 		for (auto& pBullet : listBullet)
 		{
+			if (!pBullet) continue;
 			if (IntersectRect(&rc, pParry->GetRect(), pBullet->GetRect()))
 			{
-				dynamic_cast<CParry*>(pParry)->SuccessParry();
-				pBullet->SetDead();
+				dynamic_cast<CParry*>(pParry)->OnParry(pBullet);
+				//pBullet->SetDead();
+			}
+		}
+	}
+}
+
+void CCollisionMgr::AttackCollide(list<CObj*>& listAttack, list<CObj*>& listEnemy)
+{
+	if (listAttack.empty()) return;
+	if (listEnemy.empty()) return;
+
+	//Rewinding시 패링 금지
+	if (CRewindMgr::GetInstance()->IsRewinding()) return;
+
+	RECT rc = {};
+	for (auto& pAttack : listAttack)
+	{
+		for (auto& pEnemy : listEnemy)
+		{
+			if (!pEnemy) continue;
+			if (IntersectRect(&rc, pAttack->GetRect(), pEnemy->GetRect()))
+			{
+				dynamic_cast<CAttack*>(pAttack)->OnAttack(pEnemy);
+				//pBullet->SetDead();
 			}
 		}
 	}

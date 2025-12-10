@@ -3,7 +3,11 @@
 #include  "CObjMgr.h"
 #include "CAbstractFactory.h"
 #include "CParry.h"
+#include "CAttack.h"
 #include "CInputManager.h"
+
+#include "Vec2.h"
+#include "CCamera.h"
 
 CPlayer::~CPlayer()
 {
@@ -93,9 +97,23 @@ int CPlayer::Update(float fDeltaTime)
 	}
 	UpdateAttack(fDeltaTime);
 	//중력 적용
-	m_fVelY += m_fGravity * fDeltaTime;
-
+	//m_fVelY += m_fGravity * fDeltaTime;
 	UpdateDash(fDeltaTime);
+
+	//벽에 닿았을 경우
+	if (m_bAttachWall)
+	{
+		m_fVelY += (m_fGravity * 0.5f) * fDeltaTime;
+
+		// 벽에 붙어 있을 땐 낙하 속도 상한 제한
+		if (m_fVelY > 120.f)
+			m_fVelY = 120.f;
+	}
+	else
+	{
+		//중력 적용
+		m_fVelY += m_fGravity * fDeltaTime;
+	}
 
 	//중력, Dash, Attack, 물리가 적용된 결과 위치 적용
 	m_tInfo.fX += m_fVelX * fDeltaTime;
@@ -145,22 +163,25 @@ void CPlayer::UpdateDash(float fDeltaTime)
 
 void CPlayer::ResolveTileCollision()
 {
-	if (m_tRect.bottom >= WINCY)
+	const float fHalfW = m_tInfo.fCX * 0.5f;
+	const float fHalfH = m_tInfo.fCY * 0.5f;
+
+	if (m_tInfo.fY + fHalfH >= WINCY)
 	{
-		m_tInfo.fY = WINCY - m_tInfo.fCY * 0.5f;
+		m_tInfo.fY = WINCY - fHalfH;
 		m_fVelY = 0.f; //땅에 닿았을 때 프레임마다 중력 0 초기화 
 		m_bOnGround = true;
 	}
 	//충돌 처리 
-	if (m_tRect.left <= 0)
+	if (m_tInfo.fX - fHalfW <= 0)
 	{
-		m_tInfo.fX = m_tInfo.fCX * 0.5f;
-		m_bAttachWall = true;
+		m_tInfo.fX = fHalfW;
+		//m_bAttachWall = true;
 	}
-	if (m_tRect.right >= WORLDX)
+	if (m_tInfo.fX + fHalfW >= WORLDX)
 	{
-		m_tInfo.fX = WORLDX - m_tInfo.fCX * 0.5f;
-		m_bAttachWall = true;
+		m_tInfo.fX = WORLDX - fHalfW;
+		//m_bAttachWall = true;
 	}
 	//각도 보정
 	if (m_fAngle <= 0.f) m_fAngle += 360.f;
@@ -177,8 +198,16 @@ void CPlayer::Release()
 
 void CPlayer::Render(HDC hDC)
 {
-	Rectangle(hDC, m_tRect.left, m_tRect.top, m_tRect.right, m_tRect.bottom);
-
+	//월드 -> 화면(사분면 미러 포함)
+	Vec2 vScreen = CCamera::Get_Instance()->WorldToScreen({m_tInfo.fX, m_tInfo.fY});
+	//화면 기준으로 임시 렉트 계산
+	float fLeft = vScreen.fX - m_tInfo.fCX * 0.5f;
+	float fTop = vScreen.fY - m_tInfo.fCY * 0.5f;
+	float fRight = fLeft + m_tInfo.fCX;
+	float fBottom = fTop + m_tInfo.fCY;
+	
+	Rectangle(hDC, (int)fLeft, (int)fTop, (int)fRight, (int)fBottom);
+	//Rectangle(hDC, m_tRect.left, m_tRect.top, m_tRect.right, m_tRect.bottom);
 }
 
 void CPlayer::GetKeyInput()
@@ -216,6 +245,7 @@ void CPlayer::GetKeyInput()
 	if (!m_bAttacking && m_pInput->KeyDown(eKey::ATTACK_LEFT))
 	{
 		SetAttackDir();
+		TryAttack();
 		TryParry();
 		m_bAttacking = true;
 	}
@@ -236,6 +266,14 @@ void CPlayer::SetAttackDir()
 	//방향 정규화 
 	m_fAttackDirX = fDX / fLen;
 	m_fAttackDirY = fDY / fLen;
+}
+
+void CPlayer::TryAttack()
+{
+	SetAttackDir();
+	CObj* pAttack = CAbstractFactory<CAttack>::Create();
+	pAttack->SetDir(m_fAttackDirX, m_fAttackDirY);
+	CObjMgr::Get_Instance()->Add_Object(OBJ_ATTACK, pAttack);
 }
 
 void CPlayer::TryParry()
