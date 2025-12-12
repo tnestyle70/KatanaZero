@@ -99,21 +99,12 @@ int CPlayer::Update(float fDeltaTime)
 	//중력 적용
 	//m_fVelY += m_fGravity * fDeltaTime;
 	UpdateDash(fDeltaTime);
+	
+	UpdateAttachWall(fDeltaTime);
 
-	//벽에 닿았을 경우
-	if (m_bAttachWall)
-	{
-		m_fVelY += (m_fGravity * 0.5f) * fDeltaTime;
-
-		// 벽에 붙어 있을 땐 낙하 속도 상한 제한
-		if (m_fVelY > 120.f)
-			m_fVelY = 120.f;
-	}
-	else
-	{
-		//중력 적용
-		m_fVelY += m_fGravity * fDeltaTime;
-	}
+	//중력 적용
+	m_fVelY += m_fGravity * fDeltaTime;
+	
 
 	//중력, Dash, Attack, 물리가 적용된 결과 위치 적용
 	m_tInfo.fX += m_fVelX * fDeltaTime;
@@ -161,6 +152,19 @@ void CPlayer::UpdateDash(float fDeltaTime)
 	}
 }
 
+void CPlayer::UpdateAttachWall(float fDeltaTime)
+{
+	//벽에 닿았을 경우
+	if (m_bAttachWall)
+	{
+		m_fVelY += (m_fGravity * 0.5f) * fDeltaTime;
+
+		// 벽에 붙어 있을 땐 낙하 속도 상한 제한
+		if (m_fVelY > 120.f)
+			m_fVelY = 120.f;
+	}
+}
+
 void CPlayer::ResolveTileCollision()
 {
 	const float fHalfW = m_tInfo.fCX * 0.5f;
@@ -176,12 +180,15 @@ void CPlayer::ResolveTileCollision()
 	if (m_tInfo.fX - fHalfW <= 0)
 	{
 		m_tInfo.fX = fHalfW;
-		//m_bAttachWall = true;
+		m_bAttachWall = true;
 	}
+	else if(m_tInfo.fX - fHalfW > 0)
+		m_bAttachWall = false;
+
 	if (m_tInfo.fX + fHalfW >= WORLDX)
 	{
 		m_tInfo.fX = WORLDX - fHalfW;
-		//m_bAttachWall = true;
+		m_bAttachWall = true;
 	}
 	//각도 보정
 	if (m_fAngle <= 0.f) m_fAngle += 360.f;

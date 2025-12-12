@@ -153,6 +153,9 @@
     <ClInclude Include="CAttack.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
+    <ClInclude Include="CDoctorArmClone.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="KatanaZero.cpp">
@@ -231,6 +234,9 @@
       <Filter>소스 파일</Filter>
     </ClCompile>
     <ClCompile Include="CAttack.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="CDoctorArmClone.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
   </ItemGroup>

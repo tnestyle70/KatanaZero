@@ -32,7 +32,7 @@ void CDoctorClone::Initialize()
 	//랜덤 스폰 패턴
 	m_fRandomSpawnAppearDuration = 0.2f;
 	m_fAimDuration = 0.6f;
-	m_fRandomShotDuration = 0.3f;
+	m_fRandomShotDuration = 1.f;
 	m_bShot = false;
 	//일렬 패턴
 	m_fLineSpawnAppearDuration = 0.6f;

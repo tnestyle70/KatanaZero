@@ -45,7 +45,7 @@ public:
 public:
 	void UpdateAttack(float fDeltaTime);
 	void UpdateDash(float fDeltaTime);
-	void UpdateAttachWall();
+	void UpdateAttachWall(float fDeltaTime);
 	void ResolveTileCollision();
 	void GetKeyInput();
 	void SetAttackDir();

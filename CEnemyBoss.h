@@ -19,7 +19,9 @@ public:
 	virtual void Release()PURE;
 public:
 	virtual void OnHit()PURE;
-private:
+protected:
 	eBossState m_eState;
 	float m_fStateTime;
+	int m_iArmCount;
+	int m_iCloneCount;
 };

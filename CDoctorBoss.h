@@ -3,10 +3,15 @@
 
 enum class eDoctorPattern
 {
-    ARM_ATTACK, FALLING_BULLET, EYE, MONSTER, WAITING
+    ARM, CLONE, EYE, MONSTER
 };
 
-enum class eEyePattern
+enum class eBossClonePattern
+{
+    ORBIT, LINE, RANDOM
+};
+
+enum class eBossEyePattern
 {
     NORMAL, DIVIDE, REVERSE_DIVIDE, UPSIDE_DOWN
 };
@@ -26,15 +31,19 @@ public:
     void OnHit()override;
 public :
     void ResolveCollision();
-    void UpdatePhase1(float fDeltaTime);
+    void UpdatePhaseArm(float fDeltaTime);
+    void UpdatePhaseClone(float fDeltaTime);
+    void UpdatePhaseEye(float fDeltaTime);
+    void UpdatePhaseMonster(float fDeltaTime);
+    //보스 팔 패턴
+    void UpdateArmClone();
     //보스 클론 패턴
     void UpdateOrbitClone();
     void UpdateLineClone();
-    void UpdateRandomSpawnClone();
+    void UpdateRandomClone();
     void Pattern_FallingBullet(float fDeltaTime);
     void SpawnFallingBullet();
     //눈 패턴
-    void Pattern_EyeClone(float fDeltaTime);
     void SpawnEyeClone(int iCount);
     bool IsEyeCloneDead();
     void Eye_Noraml(float fDeltaTime);
@@ -42,12 +51,16 @@ public :
     void Eye_ReverseDivide(float fDeltaTime);
     void Eye_UpsideDown(float fDeltaTime);
     bool IsEyeSplitPhase();
-    eEyePattern GetEyePattern() { return m_eEyePattern; }
+    eBossEyePattern GetEyePattern() { return m_eEyePattern; }
 private:
     eDoctorPattern m_eCurrentPattern;
-    eEyePattern m_eEyePattern;
-    float m_fPatternTime;
-    float m_fNextSpawnTime;
-    //패턴 파라미터
-    float m_fSpawnInterval = 0.4f;
+    eBossClonePattern m_eClonePattern;
+    eBossEyePattern m_eEyePattern;
+    float m_fArmPatternTime;
+    float m_fClonePatternTime;
+public:
+    static constexpr float kArmDuration = 5.f;
+    static constexpr float kOrbitDuration = 3.f;
+    static constexpr float kLineDuration = 3.f;
+    static constexpr float kRandomDuration = 3.f;
 };
